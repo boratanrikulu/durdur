@@ -32,6 +32,8 @@ durdur undrop --from "192.0.1.1"
 durdur detach
 ```
 
+https://user-images.githubusercontent.com/20258973/195852545-0f7578ad-4417-453d-8d64-64a237eca640.mp4
+
 ## Copyright
 
 [GPL-3.0 license](https://github.com/boratanrikulu/durdur/blob/main/LICENSE),  
