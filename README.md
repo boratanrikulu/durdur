@@ -2,20 +2,35 @@
 
 [Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a L4 package dropper.
 
+Note: Do not use it yet. Please wait for the first release.
+
 ## How to install
 
 TODO: ...
 
 ## How to use
 
-Run all commands via root privileges.  
+Run all commands via **root privileges**.  
 
-You can define rules with `to` or `from`. 
+1. Attach the program to BPFFS.
 ```sh
-durdur drop --to "192.0.2.1" --from "192.0.2.2" --from "192.0.2.4"
+durdur attach --interface wlp3s0
 ```
 
-[Screencast from 09-10-22 15:25:06.webm](https://user-images.githubusercontent.com/20258973/194756720-ceb51a6b-2c8c-457e-a074-a1c4eca8fed7.webm)
+2. Add rules. You can use `to` or `from` params.
+```sh
+durdur drop --from "192.0.1.1"
+```
+
+3. Remove rules.
+```sh
+durdur undrop --from "192.0.1.1"
+```
+
+4. Detach the program from BPFFS. (Cleans all resources)
+```sh
+durdur detach
+```
 
 ## Copyright
 

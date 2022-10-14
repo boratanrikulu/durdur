@@ -9,11 +9,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func DropCmd() *cli.Command {
+func UndropCmd() *cli.Command {
 	return &cli.Command{
-		Name:   "drop",
-		Usage:  "Add new IPs to the maps.",
-		Action: drop,
+		Name:   "undrop",
+		Usage:  "Deletes IPs from the maps.",
+		Action: undrop,
 		Flags: []cli.Flag{
 			&cli.StringSliceFlag{
 				Name:    "to",
@@ -29,7 +29,7 @@ func DropCmd() *cli.Command {
 	}
 }
 
-func drop(c *cli.Context) error {
+func undrop(c *cli.Context) error {
 	tos := c.StringSlice("to")
 	var toIPs []net.IP
 	for _, to := range tos {
@@ -46,5 +46,5 @@ func drop(c *cli.Context) error {
 		return errors.New("you need to specify atleast 1 ip")
 	}
 
-	return ebpf.Drop(toIPs, fromIPs)
+	return ebpf.Undrop(toIPs, fromIPs)
 }

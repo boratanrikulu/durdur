@@ -12,7 +12,10 @@ func main() {
 		Name:  "Durdur",
 		Usage: "Durdur is a L4 package dropper.",
 		Commands: []*cli.Command{
+			AttachCmd(),
+			DetachCmd(),
 			DropCmd(),
+			UndropCmd(),
 		},
 	}
 
