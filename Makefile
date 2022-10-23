@@ -12,3 +12,6 @@ compile:
 	go build -o build/durdur ./cmd/durdur
 
 build: generate compile
+
+test:
+	go test -exec sudo ./... -v -cover -race

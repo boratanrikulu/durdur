@@ -2,7 +2,6 @@ package ebpf
 
 import (
 	"fmt"
-	"log"
 	"net"
 
 	"github.com/cilium/ebpf"
@@ -10,6 +9,10 @@ import (
 )
 
 var FS = "/sys/fs/bpf"
+
+var (
+	ErrAlreadyAttached = fmt.Errorf("durdur is already attached to the interface")
+)
 
 // Attach loads the eBPF program and attaches it to the kernel.
 func Attach(iface *net.Interface) error {
@@ -25,8 +28,9 @@ func Attach(iface *net.Interface) error {
 // Attach attaches eBPF program to the kernel.
 func (e *EBPF) Attach(iface *net.Interface) error {
 	if err := e.LoadAttachedLink(); err == nil {
-		log.Printf("XDP program is already attached to %s interface", iface.Name)
-		return nil
+		return fmt.Errorf(
+			"%w: %s", ErrAlreadyAttached, iface.Name,
+		)
 	}
 
 	l, err := link.AttachXDP(link.XDPOptions{
@@ -41,7 +45,6 @@ func (e *EBPF) Attach(iface *net.Interface) error {
 		return err
 	}
 
-	log.Printf("Attached XDP program to %s interface", iface.Name)
 	e.L = l
 	return nil
 }
@@ -50,7 +53,7 @@ func (e *EBPF) Attach(iface *net.Interface) error {
 func (e *EBPF) LoadAttachedLink() error {
 	l, err := link.LoadPinnedLink(e.linkPinFile(), &ebpf.LoadPinOptions{})
 	if err != nil {
-		return fmt.Errorf("ebpf is not attached, please attach it first: %w", err)
+		return fmt.Errorf("%s: %w", err, ErrAlreadyAttached)
 	}
 
 	e.L = l
