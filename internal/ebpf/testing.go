@@ -10,7 +10,7 @@ import (
 
 var (
 	tIface     *net.Interface // It is set by tNew().
-	tIfaceStr  = "wlp3s0"
+	tIfaceStr  = "eth0"
 	tFromIP    net.IP // It is set by tNew().
 	tFromIPStr = "178.128.201.89"
 )

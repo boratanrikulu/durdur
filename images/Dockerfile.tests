@@ -1,0 +1,11 @@
+FROM golang:1.19-alpine
+WORKDIR /src
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+RUN apk add gcc llvm clang make linux-headers \
+    libbpf libbpf-dev musl musl-dev
+
+CMD ["make", "test"]

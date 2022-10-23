@@ -1,7 +1,7 @@
 CLANG ?= clang
 CFLAGS := -O2 -g -Wall -Werror $(CFLAGS)
 
-.PHONY: generate compile build
+.PHONY: generate compile build build-docker test test-docker
 
 generate: export BPF_CLANG := $(CLANG)
 generate: export BPF_CFLAGS := $(CFLAGS)
@@ -13,5 +13,12 @@ compile:
 
 build: generate compile
 
+build-docker:
+	docker build -t durdur -f images/Dockerfile .
+
 test:
-	go test -exec sudo ./... -v -cover -race
+	go test ./... -v -cover -race
+
+test-docker:
+	docker build -t durdur-test -q -f images/Dockerfile.tests . && \
+	docker run --rm -it durdur-test
