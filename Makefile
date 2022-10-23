@@ -21,4 +21,4 @@ test:
 
 test-docker:
 	docker build -t durdur-test -q -f images/Dockerfile.tests . && \
-	docker run --rm -it durdur-test
+	docker run --rm durdur-test
