@@ -7,5 +7,6 @@ COPY . .
 
 RUN apk add gcc llvm clang make linux-headers \
     libbpf libbpf-dev musl musl-dev
+RUN make generate
 
 CMD ["make", "test"]
