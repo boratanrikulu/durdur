@@ -19,5 +19,8 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
+      - name: Generate pre-compiled ebpf byte code.
+        run: make generate
+
       - name: Test
         run: make test
