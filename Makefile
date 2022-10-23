@@ -21,4 +21,4 @@ test:
 
 test-docker:
 	docker build -t durdur-test -q -f images/Dockerfile.tests . && \
-	docker run --rm durdur-test
+	docker run --rm --privileged -v /sys/fs/bpf:/sys/fs/bpf durdur-test
