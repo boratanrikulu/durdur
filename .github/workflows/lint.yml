@@ -36,4 +36,4 @@ jobs:
         with:
           version: latest
           only-new-issues: true
-          args: --exclude-use-default=false --disable-all -E golint
+          args: --no-config -E lll -E gocyclo
