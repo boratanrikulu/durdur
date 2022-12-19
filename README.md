@@ -2,8 +2,6 @@
 
 [Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a L4 package dropper.
 
-Note: Do not use it yet. Please wait for the first release.
-
 ## How to install
 
 TODO: ...
