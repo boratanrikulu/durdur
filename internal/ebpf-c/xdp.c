@@ -10,14 +10,14 @@ struct {
 	__uint(type, BPF_MAP_TYPE_HASH);
 	__type(key, __u32);
 	__type(value, long);
-	__uint(max_entries, 128);
+	__uint(max_entries, 1024);
 } drop_to_addrs SEC(".maps");
 
 struct {
 	__uint(type, BPF_MAP_TYPE_HASH);
 	__type(key, __u32);
 	__type(value, long);
-	__uint(max_entries, 128);
+	__uint(max_entries, 1024);
 } drop_from_addrs SEC(".maps");
 
 SEC("xdp_durdur_drop")
