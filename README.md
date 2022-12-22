@@ -1,10 +1,16 @@
 # Durdur
 
-[Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a L4 package dropper.
+[Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L4 package dropping with eBPF/Go (proof of concept).
 
 ## How to install
 
-TODO: ...
+#### From source
+
+Build and use `build/durdur` binary.
+
+```
+make build
+```
 
 ## How to use
 
