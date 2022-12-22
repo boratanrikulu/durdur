@@ -12,7 +12,7 @@ var (
 	tIface     *net.Interface // It is set by tNew().
 	tIfaceStr  = "eth0"
 	tFromIP    net.IP // It is set by tNew().
-	tFromIPStr = "178.128.201.89"
+	tFromIPStr = "169.155.49.112"
 )
 
 // tNew initializes testing variables and returns *qt.C.
