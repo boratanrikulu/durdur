@@ -4,7 +4,7 @@
 
 ## How to install
 
-#### From source
+### From source;
 
 Build and use `build/durdur` binary.
 
