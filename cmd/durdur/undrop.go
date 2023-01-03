@@ -25,6 +25,11 @@ func UndropCmd() *cli.Command {
 				Aliases: []string{"f"},
 				Usage:   "source ip address",
 			},
+			&cli.StringSliceFlag{
+				Name:    "dns",
+				Aliases: []string{"d"},
+				Usage:   "dns record",
+			},
 		},
 	}
 }
@@ -42,9 +47,11 @@ func undrop(c *cli.Context) error {
 		fromIPs = append(fromIPs, net.ParseIP(from))
 	}
 
-	if len(toIPs)+len(fromIPs) == 0 {
+	dnss := c.StringSlice("dns")
+
+	if len(toIPs)+len(fromIPs)+len(dnss) == 0 {
 		return errors.New("you need to specify atleast 1 ip")
 	}
 
-	return ebpf.Undrop(toIPs, fromIPs)
+	return ebpf.Undrop(toIPs, fromIPs, dnss)
 }

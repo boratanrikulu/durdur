@@ -2,6 +2,8 @@ package ebpf
 
 import (
 	"fmt"
+
+	"github.com/cilium/ebpf"
 )
 
 // Detach detaches all pinned objects from the FS.
@@ -25,24 +27,18 @@ func (e *EBPF) Detach() error {
 		return fmt.Errorf("close the link: %w", err)
 	}
 
-	if err := e.Objects.BpfMaps.DropFromAddrs.Unpin(); err != nil {
-		return fmt.Errorf("detach %s map: %w",
-			e.Objects.BpfMaps.DropFromAddrs.String(), err)
-	}
+	for _, m := range []*ebpf.Map{
+		e.Objects.BpfMaps.DropFromAddrs,
+		e.Objects.BpfMaps.DropToAddrs,
+		e.Objects.BpfMaps.DropDns,
+	} {
+		if err := m.Unpin(); err != nil {
+			return fmt.Errorf("detach %s map: %w", m.String(), err)
+		}
 
-	if err := e.Objects.BpfMaps.DropFromAddrs.Close(); err != nil {
-		return fmt.Errorf("detach %s map: %w",
-			e.Objects.BpfMaps.DropFromAddrs.String(), err)
-	}
-
-	if err := e.Objects.BpfMaps.DropToAddrs.Unpin(); err != nil {
-		return fmt.Errorf("close %s map: %w",
-			e.Objects.BpfMaps.DropToAddrs.String(), err)
-	}
-
-	if err := e.Objects.BpfMaps.DropToAddrs.Close(); err != nil {
-		return fmt.Errorf("close %s map: %w",
-			e.Objects.BpfMaps.DropToAddrs.String(), err)
+		if err := m.Close(); err != nil {
+			return fmt.Errorf("clear %s map: %w", m.String(), err)
+		}
 	}
 
 	return nil

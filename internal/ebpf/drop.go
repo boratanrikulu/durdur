@@ -6,7 +6,7 @@ import (
 )
 
 // Drop add new IPs to the maps.
-func Drop(toIPs, fromIPs []net.IP) error {
+func Drop(toIPs, fromIPs []net.IP, dnss []string) error {
 	e, err := newEBPFWithLink()
 	if err != nil {
 		return err
@@ -22,6 +22,12 @@ func Drop(toIPs, fromIPs []net.IP) error {
 	for _, fromIP := range fromIPs {
 		if err := e.AddFromIP(fromIP); err != nil {
 			return fmt.Errorf("could not insert FROM IP to the map: %w", err)
+		}
+	}
+
+	for _, dns := range dnss {
+		if err := e.AddDNS(dns); err != nil {
+			return fmt.Errorf("could not insert DNS to the map: %w", err)
 		}
 	}
 
