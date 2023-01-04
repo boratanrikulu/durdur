@@ -10,7 +10,7 @@
 #include <netinet/in.h>
 #include <string.h>
 
-#define MAX_DNS_NAME_LENGTH 256
+#define MAX_DNS_NAME_LENGTH 128
 #define MAX_ENTRIES 1024
 
 struct dnshdr
@@ -55,13 +55,21 @@ struct
 	__uint(max_entries, MAX_ENTRIES);
 } drop_from_addrs SEC(".maps");
 
-struct
+struct bpf_map_def
 {
-	__uint(type, BPF_MAP_TYPE_HASH);
-	__type(key, __u32); // TODO: fix uint32 usage.
-	__type(value, long);
-	__uint(max_entries, MAX_ENTRIES);
-} drop_dns SEC(".maps");
+	unsigned int type;
+	unsigned int key_size;
+	unsigned int value_size;
+	unsigned int max_entries;
+	unsigned int map_flags;
+};
+
+struct bpf_map_def SEC("maps") drop_dns = {
+	.type = BPF_MAP_TYPE_HASH,
+	.key_size = MAX_DNS_NAME_LENGTH,
+	.value_size = sizeof(long),
+	.max_entries = MAX_ENTRIES,
+	.map_flags = 0};
 
 static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 {
@@ -162,6 +170,7 @@ int xdp_durdur_drop_func(struct xdp_md *ctx)
 					return XDP_PASS;
 				}
 
+				bpf_printk("DNS QUERY TO %s", &query.name);
 				if (bpf_map_lookup_elem(&drop_dns, &query.name))
 				{
 					return XDP_DROP;
