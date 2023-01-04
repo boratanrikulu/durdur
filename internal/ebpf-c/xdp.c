@@ -55,21 +55,13 @@ struct
 	__uint(max_entries, MAX_ENTRIES);
 } drop_from_addrs SEC(".maps");
 
-struct bpf_map_def
+struct
 {
-	unsigned int type;
-	unsigned int key_size;
-	unsigned int value_size;
-	unsigned int max_entries;
-	unsigned int map_flags;
-};
-
-struct bpf_map_def SEC("maps") drop_dns = {
-	.type = BPF_MAP_TYPE_HASH,
-	.key_size = MAX_DNS_NAME_LENGTH,
-	.value_size = sizeof(long),
-	.max_entries = MAX_ENTRIES,
-	.map_flags = 0};
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(key_size, MAX_DNS_NAME_LENGTH);
+	__uint(value_size, sizeof(long));
+	__uint(max_entries, MAX_ENTRIES);
+} drop_dns SEC(".maps");
 
 static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 {
