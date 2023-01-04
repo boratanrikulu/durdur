@@ -36,6 +36,6 @@ func stringToBytes(input string) ([bytesLength]byte, error) {
 	if len(bs) > bytesLength {
 		return output, fmt.Errorf("%s is longer than %d characters", input, bytesLength)
 	}
-	copy(bs, output[:])
+	copy(output[:], bs)
 	return output, nil
 }
