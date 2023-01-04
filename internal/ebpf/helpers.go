@@ -1,5 +1,9 @@
 package ebpf
 
+import (
+	"fmt"
+)
+
 // newEBPF returns a new loaded EBPF.
 func newEBPF() (*EBPF, error) {
 	e := New()
@@ -22,4 +26,16 @@ func newEBPFWithLink() (*EBPF, error) {
 	}
 
 	return e, nil
+}
+
+const bytesLength = 128
+
+func stringToBytes(input string) ([bytesLength]byte, error) {
+	output := [bytesLength]byte{}
+	bs := []byte(input)
+	if len(bs) > bytesLength {
+		return output, fmt.Errorf("%s is longer than %d characters", input, bytesLength)
+	}
+	copy(bs, output[:])
+	return output, nil
 }

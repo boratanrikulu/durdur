@@ -1,7 +1,6 @@
 package ebpf
 
 import (
-	"encoding/binary"
 	"net"
 )
 
@@ -17,7 +16,11 @@ func (e *EBPF) AddFromIP(ip net.IP) error {
 
 // Add puts given DNS to the Map.
 func (e *EBPF) AddDNS(dns string) error {
-	return e.Objects.DropDns.Put(binary.LittleEndian.Uint32([]byte(dns)), uint64(0))
+	key, err := stringToBytes(dns)
+	if err != nil {
+		return err
+	}
+	return e.Objects.DropDns.Put(key, uint64(0))
 }
 
 // DeleteToIP deletes given TO IP from the Map.
@@ -32,5 +35,9 @@ func (e *EBPF) DeleteFromIP(ip net.IP) error {
 
 // DeleteDNS deletes given DNS from the Map.
 func (e *EBPF) DeleteDNS(dns string) error {
-	return e.Objects.DropDns.Delete(binary.LittleEndian.Uint32([]byte(dns)))
+	key, err := stringToBytes(dns)
+	if err != nil {
+		return err
+	}
+	return e.Objects.DropDns.Delete(key)
 }
