@@ -2,6 +2,7 @@ package ebpf
 
 import (
 	"net"
+	"net/http"
 	"testing"
 	"time"
 
@@ -13,8 +14,8 @@ var (
 	tIfaceStr  = "eth0"
 	tFromIP    net.IP // It is set by tNew().
 	tFromIPStr = "169.155.49.112"
-	tDNShttps  = "https://bora.sh"
-	tDNS       = ".bora.sh"
+	tDNShttps  = "https://quik.do"
+	tDNS       = ".quik.do"
 )
 
 // tNew initializes testing variables and returns *qt.C.
@@ -93,4 +94,24 @@ func tWrappedFunc(c *qt.C, until string, f func(e *EBPF)) {
 // tWait waits.
 func tWait() {
 	time.Sleep(1 * time.Second) // TODO: remove this line.
+}
+
+// tTCPWrite tests the TCP connection through the address.
+func tTCPWrite(c *qt.C, address string, ok bool) {
+	conn, err := net.DialTimeout("tcp", address, 2*time.Second)
+	if !ok {
+		c.Assert(err, qt.ErrorMatches, ".* i/o timeout")
+		return
+	}
+	c.Assert(err, qt.IsNil)
+	defer conn.Close()
+
+	_, err = conn.Write([]byte("hey"))
+	c.Assert(err, qt.IsNil)
+}
+
+func tHTTPClient() *http.Client {
+	return &http.Client{
+		Timeout: 1 * time.Second,
+	}
 }

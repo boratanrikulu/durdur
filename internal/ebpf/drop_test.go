@@ -2,11 +2,8 @@ package ebpf
 
 import (
 	"fmt"
-	"net"
-	"net/http"
 	"strings"
 	"testing"
-	"time"
 
 	qt "github.com/frankban/quicktest"
 )
@@ -17,17 +14,11 @@ func TestDrop(t *testing.T) {
 	t.Run("drop ip", func(t *testing.T) {
 		tWrappedFunc(c, "attach", func(e *EBPF) {
 			address := fmt.Sprintf("%s:443", tFromIPStr)
-			conn, err := net.DialTimeout("tcp", address, 2*time.Second)
-			c.Assert(err, qt.IsNil)
-			defer conn.Close()
-
-			_, err = conn.Write([]byte("hey"))
-			c.Assert(err, qt.IsNil)
+			tTCPWrite(c, address, true)
 
 			c.Assert(e.AddFromIP(tFromIP), qt.IsNil)
 
-			_, err = net.DialTimeout("tcp", address, 2*time.Second)
-			c.Assert(err, qt.ErrorMatches, ".* i/o timeout")
+			tTCPWrite(c, address, false)
 		})
 	})
 
@@ -35,7 +26,7 @@ func TestDrop(t *testing.T) {
 		tWrappedFunc(c, "attach", func(e *EBPF) {
 			c.Assert(e.AddDNS(tDNS), qt.IsNil)
 
-			_, err := http.Get(tDNShttps)
+			_, err := tHTTPClient().Get(tDNShttps)
 			c.Assert(err, qt.IsNotNil)
 		})
 	})
