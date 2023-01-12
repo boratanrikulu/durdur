@@ -26,9 +26,17 @@ durdur attach --interface wlp3s0
 durdur drop --from "192.0.1.1"
 ```
 
+```sh
+durdur drop --dns "bora.sh"
+```
+
 3. Remove rules.
 ```sh
 durdur undrop --from "192.0.1.1"
+```
+
+```sh
+durdur undrop --dns "bora.sh"
 ```
 
 4. Detach the program from BPFFS. (Cleans all resources)
