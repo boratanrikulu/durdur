@@ -162,11 +162,12 @@ int xdp_durdur_drop_func(struct xdp_md *ctx)
 					return XDP_PASS;
 				}
 
-				bpf_printk("DNS QUERY TO %s", &query.name);
 				if (bpf_map_lookup_elem(&drop_dns, &query.name))
 				{
+					bpf_printk("[BLOCK] DNS QUERY TO %s", &query.name);
 					return XDP_DROP;
 				}
+				bpf_printk("[ALLOW] DNS QUERY TO %s", &query.name);
 			}
 		}
 	}

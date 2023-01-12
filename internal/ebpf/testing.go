@@ -13,6 +13,8 @@ var (
 	tIfaceStr  = "eth0"
 	tFromIP    net.IP // It is set by tNew().
 	tFromIPStr = "169.155.49.112"
+	tDNShttps  = "https://bora.sh"
+	tDNS       = ".bora.sh"
 )
 
 // tNew initializes testing variables and returns *qt.C.
@@ -49,6 +51,13 @@ func tDoUntil(c *qt.C, e *EBPF, until string) {
 		c.Assert(e.Attach(tIface), qt.IsNil)
 		c.Assert(e.AddFromIP(tFromIP), qt.IsNil)
 		c.Assert(e.DeleteFromIP(tFromIP), qt.IsNil)
+	case "drop-dns":
+		c.Assert(e.Attach(tIface), qt.IsNil)
+		c.Assert(e.AddDNS(tDNS), qt.IsNil)
+	case "undrop-dns":
+		c.Assert(e.Attach(tIface), qt.IsNil)
+		c.Assert(e.AddDNS(tDNS), qt.IsNil)
+		c.Assert(e.DeleteDNS(tDNS), qt.IsNil)
 	default:
 		c.Fatalf("%s until type is not supported", until)
 	}
@@ -67,16 +76,18 @@ func tWrappedFunc(c *qt.C, until string, f func(e *EBPF)) {
 		tWait()
 	}
 
-	f(e)
-
-	if until != "detach" {
-		tWait()
-		if err := e.Detach(); err != nil {
-			c.Fatalf("detach resources: %s", err)
+	defer func() {
+		if until != "detach" {
+			tWait()
+			if err := e.Detach(); err != nil {
+				c.Fatalf("detach resources: %s", err)
+			}
 		}
-	}
 
-	tWait()
+		tWait()
+	}()
+
+	f(e)
 }
 
 // tWait waits.
