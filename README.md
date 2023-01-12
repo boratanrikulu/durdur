@@ -1,6 +1,6 @@
 # Durdur
 
-[Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L3/L4 package dropping with eBPF/Go (proof of concept).
+[Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L3/L4 packet dropping with eBPF/Go (proof of concept).
 
 ## How to install
 
