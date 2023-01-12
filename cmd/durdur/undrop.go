@@ -50,7 +50,7 @@ func undrop(c *cli.Context) error {
 	dnss := c.StringSlice("dns")
 
 	if len(toIPs)+len(fromIPs)+len(dnss) == 0 {
-		return errors.New("you need to specify atleast 1 ip")
+		return errors.New("you need to specify at least 1 rule")
 	}
 
 	return ebpf.Undrop(toIPs, fromIPs, dnss)

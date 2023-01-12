@@ -41,8 +41,4 @@ https://user-images.githubusercontent.com/20258973/195852545-0f7578ad-4417-453d-
 ## Copyright
 
 [GPL-3.0 license](https://github.com/boratanrikulu/durdur/blob/main/LICENSE),  
-Copyright 2022 Bora Tanrikulu <[me@bora.sh](mailto:me@bora.sh)>
-
-## TODO
-
-- [ ] Add DNS support.
+Copyright 2022-2023 Bora Tanrikulu <[me@bora.sh](mailto:me@bora.sh)>
