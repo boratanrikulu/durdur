@@ -14,8 +14,8 @@
 #define MAX_DNS_NAME_LENGTH 128
 #define MAX_ENTRIES 1024
 
-// "#define DEBUG 1" to see debug logs.
-// Watch "/sys/kernel/debug/tracing/trace_pipe" file
+// To see debug logs, set "#define DEBUG 1"
+// and watch "/sys/kernel/debug/tracing/trace_pipe" file.
 #define DEBUG 1
 #ifdef DEBUG
 #define printk(fmt, ...)                                           \
