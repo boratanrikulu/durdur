@@ -2,6 +2,8 @@
 
 [Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L3/L4 packet dropping with eBPF/Go.
 
+![example](doc/example.png)
+
 ## How to use
 
 Durdur is easy to use with just four commands: **`attach`**, **`detach`**, **`drop`**, and **`undrop`**.  

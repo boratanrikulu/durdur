@@ -12,7 +12,7 @@ import (
 func UndropCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "undrop",
-		Usage:  "Deletes rules from the maps.",
+		Usage:  "Deletes rules from the maps",
 		Action: undrop,
 		Flags:  dropUndropFlags(),
 	}

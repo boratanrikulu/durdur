@@ -12,7 +12,7 @@ import (
 func DropCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "drop",
-		Usage:  "Add new rules to the maps.",
+		Usage:  "Add new rules to the maps",
 		Action: drop,
 		Flags:  dropUndropFlags(),
 	}

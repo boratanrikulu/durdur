@@ -13,7 +13,7 @@ import (
 func AttachCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "attach",
-		Usage:  "Attaches the program to the kernel.",
+		Usage:  "Attaches the program to the kernel",
 		Action: attach,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
