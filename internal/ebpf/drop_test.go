@@ -33,21 +33,21 @@ func TestDrop(t *testing.T) {
 
 	t.Run("drop dns, too long", func(t *testing.T) {
 		tWrappedFunc(c, "attach", func(e *EBPF) {
-			maxLength := bytesLength - (len(tDNS) + 1)
-			okUsage := fmt.Sprintf(".%s%s",
+			maxLength := bytesLength - (len(tDNS) + 1) - 1
+			okUsage := fmt.Sprintf("%s.%s",
 				strings.Repeat("a", maxLength),
 				tDNS,
 			)
 			c.Assert(e.AddDNS(okUsage), qt.IsNil)
 
-			wrongUsage := fmt.Sprintf(".%s%s",
+			wrongUsage := fmt.Sprintf("%s.%s",
 				strings.Repeat("a", maxLength+1),
 				tDNS,
 			)
 			err := e.AddDNS(wrongUsage)
 			c.Assert(err, qt.IsNotNil)
 			c.Assert(err, qt.ErrorMatches,
-				fmt.Sprintf("%s is longer than %d characters", wrongUsage, bytesLength),
+				fmt.Sprintf(".%s is longer than %d characters", wrongUsage, bytesLength),
 			)
 		})
 	})

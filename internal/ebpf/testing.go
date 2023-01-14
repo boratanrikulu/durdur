@@ -15,7 +15,7 @@ var (
 	tFromIP    net.IP // It is set by tNew().
 	tFromIPStr = "169.155.49.112"
 	tDNShttps  = "https://quik.do"
-	tDNS       = ".quik.do"
+	tDNS       = "quik.do"
 )
 
 // tNew initializes testing variables and returns *qt.C.

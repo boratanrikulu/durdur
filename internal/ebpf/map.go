@@ -1,6 +1,7 @@
 package ebpf
 
 import (
+	"fmt"
 	"net"
 )
 
@@ -16,7 +17,7 @@ func (e *EBPF) AddFromIP(ip net.IP) error {
 
 // Add puts given DNS to the Map.
 func (e *EBPF) AddDNS(dns string) error {
-	key, err := stringToBytes(dns)
+	key, err := stringToBytes(formatDNS(dns))
 	if err != nil {
 		return err
 	}
@@ -35,9 +36,14 @@ func (e *EBPF) DeleteFromIP(ip net.IP) error {
 
 // DeleteDNS deletes given DNS from the Map.
 func (e *EBPF) DeleteDNS(dns string) error {
-	key, err := stringToBytes(dns)
+	key, err := stringToBytes(formatDNS(dns))
 	if err != nil {
 		return err
 	}
 	return e.Objects.DropDns.Delete(key)
+}
+
+func formatDNS(dns string) string {
+	// TODO: remove after the fix for first-point issue.
+	return fmt.Sprintf(".%s", dns)
 }

@@ -9,9 +9,22 @@
 #include <linux/udp.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <stdarg.h>
 
 #define MAX_DNS_NAME_LENGTH 128
 #define MAX_ENTRIES 1024
+
+// "#define DEBUG 1" to see debug logs.
+// Watch "/sys/kernel/debug/tracing/trace_pipe" file
+#define DEBUG 1
+#ifdef DEBUG
+#define printk(fmt, ...)                                           \
+	({                                                             \
+		bpf_trace_printk(fmt, sizeof(fmt), ##__VA_ARGS__); \
+	})
+#else
+#define printk(fmt, ...)  
+#endif
 
 struct dnshdr
 {
@@ -34,8 +47,6 @@ struct dnshdr
 
 struct dnsquery
 {
-	uint16_t record_type;
-	uint16_t cls;
 	char name[MAX_DNS_NAME_LENGTH];
 };
 
@@ -66,45 +77,43 @@ struct
 static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 {
 	void *cursor = query_start;
-
 	memset(&q->name[0], 0, sizeof(q->name));
-	q->record_type = 0;
-	q->cls = 0;
 
-	for (uint16_t i = 0; i < MAX_DNS_NAME_LENGTH; i++)
+	__u8 label_cursor = 0;
+	for (__u8 i = 0; i < MAX_DNS_NAME_LENGTH; i++, cursor++)
 	{
 		if (cursor + 1 > data_end)
 		{
-			return 1;
+			return -1; // packet is too short.
 		}
 
-		if (*(char *)(cursor) == 0)
+		if (*(__u8 *)cursor == 0)
 		{
-			if (cursor + 5 <= data_end)
+			break; // end of domain name.
+		}
+
+		if (label_cursor == 0)
+		{
+			// the cursor is on a label length byte.
+			__u8 new_label_length = *(__u8 *)cursor;
+			if (cursor + new_label_length > data_end)
 			{
-				q->record_type = bpf_htons(*(uint16_t *)(cursor + 1));
-				q->cls = bpf_htons(*(uint16_t *)(cursor + 3));
+				return -1; // packet is too short.
 			}
-
-			return 1;
-		}
-
-		char c = *(char *)cursor;
-		if (c < 10)
-		{
+			label_cursor = new_label_length;
 			q->name[i] = '.';
+			continue;
 		}
-		else
-		{
-			q->name[i] = c;
-		}
-		cursor++;
+
+		label_cursor--;
+		char c = *(char *)cursor;
+		q->name[i] = c;
 	}
 
-	return -1;
+	return 1;
 }
 
-SEC("xdp_durdur_drop_ip")
+SEC("xdp_durdur_func")
 int xdp_durdur_drop_func(struct xdp_md *ctx)
 {
 	void *data = (void *)(long)ctx->data;
@@ -152,7 +161,7 @@ int xdp_durdur_drop_func(struct xdp_md *ctx)
 			}
 
 			struct dnshdr *dns = data + sizeof(*eth) + sizeof(*ip) + sizeof(*udp);
-			if (dns->opcode == 0) // Check if it's a DNS query.
+			if (dns->opcode == 0) // it's dns query.
 			{
 				void *query_start = (void *)dns + sizeof(struct dnshdr);
 
@@ -164,10 +173,10 @@ int xdp_durdur_drop_func(struct xdp_md *ctx)
 
 				if (bpf_map_lookup_elem(&drop_dns, &query.name))
 				{
-					bpf_printk("[BLOCK] DNS QUERY TO %s", &query.name);
+					printk("[BLOCK] DNS QUERY TO %s", &query.name);
 					return XDP_DROP;
 				}
-				bpf_printk("[ALLOW] DNS QUERY TO %s", &query.name);
+				printk("[ALLOW] DNS QUERY TO %s", &query.name);
 			}
 		}
 	}
