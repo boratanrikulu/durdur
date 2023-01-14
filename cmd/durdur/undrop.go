@@ -12,25 +12,9 @@ import (
 func UndropCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "undrop",
-		Usage:  "Deletes IPs from the maps.",
+		Usage:  "Deletes rules from the maps.",
 		Action: undrop,
-		Flags: []cli.Flag{
-			&cli.StringSliceFlag{
-				Name:    "to",
-				Aliases: []string{"t"},
-				Usage:   "destination ip address",
-			},
-			&cli.StringSliceFlag{
-				Name:    "from",
-				Aliases: []string{"f"},
-				Usage:   "source ip address",
-			},
-			&cli.StringSliceFlag{
-				Name:    "dns",
-				Aliases: []string{"d"},
-				Usage:   "dns record",
-			},
-		},
+		Flags:  dropUndropFlags(),
 	}
 }
 

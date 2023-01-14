@@ -12,25 +12,9 @@ import (
 func DropCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "drop",
-		Usage:  "Add new IPs to the maps.",
+		Usage:  "Add new rules to the maps.",
 		Action: drop,
-		Flags: []cli.Flag{
-			&cli.StringSliceFlag{
-				Name:    "to",
-				Aliases: []string{"t"},
-				Usage:   "destination ip address",
-			},
-			&cli.StringSliceFlag{
-				Name:    "from",
-				Aliases: []string{"f"},
-				Usage:   "source ip address",
-			},
-			&cli.StringSliceFlag{
-				Name:    "dns",
-				Aliases: []string{"d"},
-				Usage:   "dns record",
-			},
-		},
+		Flags:  dropUndropFlags(),
 	}
 }
 
@@ -54,4 +38,24 @@ func drop(c *cli.Context) error {
 	}
 
 	return ebpf.Drop(toIPs, fromIPs, dnss)
+}
+
+func dropUndropFlags() []cli.Flag {
+	return []cli.Flag{
+		&cli.StringSliceFlag{
+			Name:    "to",
+			Aliases: []string{"t"},
+			Usage:   "destination address value of an IPv4 packet",
+		},
+		&cli.StringSliceFlag{
+			Name:    "from",
+			Aliases: []string{"f"},
+			Usage:   "source address value of an IPv4 packet",
+		},
+		&cli.StringSliceFlag{
+			Name:    "dns",
+			Aliases: []string{"d"},
+			Usage:   "domain value of a DNS packet",
+		},
+	}
 }

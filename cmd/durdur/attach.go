@@ -19,13 +19,13 @@ func AttachCmd() *cli.Command {
 			&cli.StringFlag{
 				Name:    "bpffs",
 				Aliases: []string{"b"},
-				Usage:   "mounted bpffs location",
+				Usage:   "bpffs location",
 				Value:   "/sys/fs/bpf",
 			},
 			&cli.StringFlag{
 				Name:     "interface",
 				Aliases:  []string{"i"},
-				Usage:    "network interface",
+				Usage:    "network interface name",
 				Required: true,
 			},
 		},

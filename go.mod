@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/cilium/ebpf v0.9.3
 	github.com/frankban/quicktest v1.14.0
-	github.com/urfave/cli/v2 v2.17.1
+	github.com/urfave/cli/v2 v2.23.7
 )
 
 require (

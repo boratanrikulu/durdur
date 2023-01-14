@@ -5,9 +5,7 @@
 #include <linux/if_ether.h>
 #include <arpa/inet.h>
 #include <linux/ip.h>
-#include <linux/tcp.h>
 #include <linux/udp.h>
-#include <netinet/in.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -161,7 +159,7 @@ int xdp_durdur_drop_func(struct xdp_md *ctx)
 			}
 
 			struct dnshdr *dns = data + sizeof(*eth) + sizeof(*ip) + sizeof(*udp);
-			if (dns->opcode == 0) // it's dns query.
+			if (dns->opcode == 0) // it's a dns query.
 			{
 				void *query_start = (void *)dns + sizeof(struct dnshdr);
 

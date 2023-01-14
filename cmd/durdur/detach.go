@@ -17,7 +17,7 @@ func DetachCmd() *cli.Command {
 			&cli.StringFlag{
 				Name:    "bpffs",
 				Aliases: []string{"b"},
-				Usage:   "mounted bpffs location",
+				Usage:   "bpffs location",
 				Value:   "/sys/fs/bpf",
 			},
 		},
