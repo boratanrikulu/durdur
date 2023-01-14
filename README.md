@@ -1,6 +1,58 @@
 # Durdur
 
-[Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L4 packet dropping with eBPF/Go (proof of concept).
+[Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L3/L4 packet dropping with eBPF/Go.
+
+![example](doc/example.png)
+
+## How to use
+
+Durdur is easy to use with just four commands: **`attach`**, **`detach`**, **`drop`**, and **`undrop`**.  
+All commands should be run with **root privileges**.
+
+### Attach
+
+**`attach`** installs Durdur on the system for a specific interface.
+
+```sh
+durdur attach --interface eth0
+```
+
+### Detach
+
+**`detach`** uninstalls Durdur from the system.
+
+```sh
+durdur detach
+```
+
+### Drop and Undrop
+
+**`drop`** and **`undrop`** checks all L3 and L4 packets in the system and either block or allow them.  
+Both commands support the following flags:  
+
+- **`to`** for the destination address value of an IPv4 packet.
+- **`from`** for the source address value of an IPv4 packet.
+- **`dns`** for the domain value of a DNS packet.
+
+Example usage for **`drop`**;
+
+```sh
+durdur drop --from "192.0.1.1"
+```
+
+```sh
+durdur drop --dns "example.com"
+```
+
+Example usage for **`undrop`**;
+
+```sh
+durdur undrop --from "192.0.1.1"
+```
+
+```sh
+durdur undrop --dns "example.com"
+```
 
 ## How to install
 
@@ -12,37 +64,35 @@ Build and use `build/durdur` binary.
 make build
 ```
 
-## How to use
+### From Docker image;
 
-Run all commands via **root privileges**.  
-
-1. Attach the program to BPFFS.
+Build the image.  
 ```sh
-durdur attach --interface wlp3s0
+make build-docker
 ```
 
-2. Add rules. You can use `to` or `from` params.
+Run the container with **privileges**.  
+
+Example usage;  
+
 ```sh
-durdur drop --from "192.0.1.1"
+docker run --rm -i -t --net="host" --privileged -v /sys/fs/bpf:/sys/fs/bpf durdur -- attach -i eth0
 ```
 
-3. Remove rules.
 ```sh
-durdur undrop --from "192.0.1.1"
+docker run --rm -i -t --net="host" --privileged -v /sys/fs/bpf:/sys/fs/bpf durdur -- drop --dns "example"
 ```
 
-4. Detach the program from BPFFS. (Cleans all resources)
-```sh
-durdur detach
-```
+PS: You don't need to use `--net="host"` if you don't want to access host's interfaces.
 
-https://user-images.githubusercontent.com/20258973/195852545-0f7578ad-4417-453d-8d64-64a237eca640.mp4
+## TODO
+
+- [ ] Add wildcard support to DNS.
+- [ ] Add IPv6 support.
+- [ ] Add **`list`** command for added rules.
+- [ ] Add port support
 
 ## Copyright
 
 [GPL-3.0 license](https://github.com/boratanrikulu/durdur/blob/main/LICENSE),  
-Copyright 2022 Bora Tanrikulu <[me@bora.sh](mailto:me@bora.sh)>
-
-## TODO
-
-- [ ] Add DNS support.
+Copyright 2022-2023 Bora Tanrikulu <[me@bora.sh](mailto:me@bora.sh)>

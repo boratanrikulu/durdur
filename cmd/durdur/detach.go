@@ -11,13 +11,13 @@ import (
 func DetachCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "detach",
-		Usage:  "Detaches the program from the kernel.",
+		Usage:  "Detaches the program from the kernel",
 		Action: detach,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "bpffs",
 				Aliases: []string{"b"},
-				Usage:   "mounted bpffs location",
+				Usage:   "bpffs location",
 				Value:   "/sys/fs/bpf",
 			},
 		},

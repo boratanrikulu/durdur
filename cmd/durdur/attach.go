@@ -13,19 +13,19 @@ import (
 func AttachCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "attach",
-		Usage:  "Attaches the program to the kernel.",
+		Usage:  "Attaches the program to the kernel",
 		Action: attach,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "bpffs",
 				Aliases: []string{"b"},
-				Usage:   "mounted bpffs location",
+				Usage:   "bpffs location",
 				Value:   "/sys/fs/bpf",
 			},
 			&cli.StringFlag{
 				Name:     "interface",
 				Aliases:  []string{"i"},
-				Usage:    "network interface",
+				Usage:    "network interface name",
 				Required: true,
 			},
 		},

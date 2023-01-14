@@ -12,20 +12,9 @@ import (
 func DropCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "drop",
-		Usage:  "Add new IPs to the maps.",
+		Usage:  "Add new rules to the maps",
 		Action: drop,
-		Flags: []cli.Flag{
-			&cli.StringSliceFlag{
-				Name:    "to",
-				Aliases: []string{"t"},
-				Usage:   "destination ip address",
-			},
-			&cli.StringSliceFlag{
-				Name:    "from",
-				Aliases: []string{"f"},
-				Usage:   "source ip address",
-			},
-		},
+		Flags:  dropUndropFlags(),
 	}
 }
 
@@ -42,9 +31,31 @@ func drop(c *cli.Context) error {
 		fromIPs = append(fromIPs, net.ParseIP(from))
 	}
 
-	if len(toIPs)+len(fromIPs) == 0 {
-		return errors.New("you need to specify atleast 1 ip")
+	dnss := c.StringSlice("dns")
+
+	if len(toIPs)+len(fromIPs)+len(dnss) == 0 {
+		return errors.New("you need to specify at least 1 rule")
 	}
 
-	return ebpf.Drop(toIPs, fromIPs)
+	return ebpf.Drop(toIPs, fromIPs, dnss)
+}
+
+func dropUndropFlags() []cli.Flag {
+	return []cli.Flag{
+		&cli.StringSliceFlag{
+			Name:    "to",
+			Aliases: []string{"t"},
+			Usage:   "destination address value of an IPv4 packet",
+		},
+		&cli.StringSliceFlag{
+			Name:    "from",
+			Aliases: []string{"f"},
+			Usage:   "source address value of an IPv4 packet",
+		},
+		&cli.StringSliceFlag{
+			Name:    "dns",
+			Aliases: []string{"d"},
+			Usage:   "domain value of a DNS packet",
+		},
+	}
 }

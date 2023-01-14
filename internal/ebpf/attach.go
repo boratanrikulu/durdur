@@ -12,6 +12,7 @@ var FS = "/sys/fs/bpf"
 
 var (
 	ErrAlreadyAttached = fmt.Errorf("durdur is already attached to the interface")
+	ErrNoAttach        = fmt.Errorf("durdur is not attached to the interface")
 )
 
 // Attach loads the eBPF program and attaches it to the kernel.
@@ -53,7 +54,7 @@ func (e *EBPF) Attach(iface *net.Interface) error {
 func (e *EBPF) LoadAttachedLink() error {
 	l, err := link.LoadPinnedLink(e.linkPinFile(), &ebpf.LoadPinOptions{})
 	if err != nil {
-		return fmt.Errorf("%s: %w", err, ErrAlreadyAttached)
+		return fmt.Errorf("%s: %w", err, ErrNoAttach)
 	}
 
 	e.L = l

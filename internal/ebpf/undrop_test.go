@@ -3,6 +3,7 @@ package ebpf
 import (
 	"fmt"
 	"net"
+	"net/http"
 	"testing"
 	"time"
 
@@ -26,6 +27,16 @@ func TestUndrop(t *testing.T) {
 
 			_, err = conn.Write([]byte("hey"))
 			c.Assert(err, qt.IsNil)
+		})
+	})
+
+	t.Run("undrop", func(t *testing.T) {
+		tWrappedFunc(c, "drop-dns", func(e *EBPF) {
+			c.Assert(e.DeleteDNS(tDNS), qt.IsNil)
+
+			resp, err := tHTTPClient().Get(tDNShttps)
+			c.Assert(err, qt.IsNil)
+			c.Assert(resp.StatusCode, qt.Equals, http.StatusOK)
 		})
 	})
 }

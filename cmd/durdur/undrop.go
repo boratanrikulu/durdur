@@ -12,20 +12,9 @@ import (
 func UndropCmd() *cli.Command {
 	return &cli.Command{
 		Name:   "undrop",
-		Usage:  "Deletes IPs from the maps.",
+		Usage:  "Deletes rules from the maps",
 		Action: undrop,
-		Flags: []cli.Flag{
-			&cli.StringSliceFlag{
-				Name:    "to",
-				Aliases: []string{"t"},
-				Usage:   "destination ip address",
-			},
-			&cli.StringSliceFlag{
-				Name:    "from",
-				Aliases: []string{"f"},
-				Usage:   "source ip address",
-			},
-		},
+		Flags:  dropUndropFlags(),
 	}
 }
 
@@ -42,9 +31,11 @@ func undrop(c *cli.Context) error {
 		fromIPs = append(fromIPs, net.ParseIP(from))
 	}
 
-	if len(toIPs)+len(fromIPs) == 0 {
-		return errors.New("you need to specify atleast 1 ip")
+	dnss := c.StringSlice("dns")
+
+	if len(toIPs)+len(fromIPs)+len(dnss) == 0 {
+		return errors.New("you need to specify at least 1 rule")
 	}
 
-	return ebpf.Undrop(toIPs, fromIPs)
+	return ebpf.Undrop(toIPs, fromIPs, dnss)
 }

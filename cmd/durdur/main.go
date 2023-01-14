@@ -10,7 +10,7 @@ import (
 func main() {
 	app := &cli.App{
 		Name:  "Durdur",
-		Usage: "Durdur is a L4 package dropper.",
+		Usage: "eBPF-powered L3/L4 packet dropper",
 		Commands: []*cli.Command{
 			AttachCmd(),
 			DetachCmd(),
