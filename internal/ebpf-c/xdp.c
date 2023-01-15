@@ -75,9 +75,11 @@ static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 {
 	void *cursor = query_start;
 	memset(&q->name[0], 0, sizeof(q->name));
-
 	__u8 label_cursor = 0;
-	for (__u8 i = 0; i < MAX_DNS_NAME_LENGTH; i++, cursor++)
+
+	// The loop starts with '-1', because the first char will be '.'
+	// and we want to bypass it, check (i == -1) statement for details.
+	for (__s16 i = -1; i < MAX_DNS_NAME_LENGTH; i++, cursor++)
 	{
 		if (cursor + 1 > data_end)
 		{
@@ -98,6 +100,10 @@ static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 				return -1; // packet is too short.
 			}
 			label_cursor = new_label_length;
+			if (i == -1) {
+				// This is the first label, no need to set '.'
+				continue;
+			}
 			q->name[i] = '.';
 			continue;
 		}
