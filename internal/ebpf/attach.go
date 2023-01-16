@@ -35,7 +35,7 @@ func (e *EBPF) Attach(iface *net.Interface) error {
 	}
 
 	l, err := link.AttachXDP(link.XDPOptions{
-		Program:   e.Objects.XdpDurdurDropFunc,
+		Program:   e.Objects.XdpDurdurFunc,
 		Interface: iface.Index,
 	})
 	if err != nil {
