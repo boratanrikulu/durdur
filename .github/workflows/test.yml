@@ -19,5 +19,8 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
+      - name: Install depends
+        run: sudo apt install -y --no-install-recommends clang llvm libbpf0 libbpf-dev musl musl-dev gcc-multilib
+
       - name: Test
-        run: make test-docker
+        run: make test
