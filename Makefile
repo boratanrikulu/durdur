@@ -17,7 +17,7 @@ build-docker:
 	docker build -t durdur -f images/Dockerfile .
 
 test: build
-	go test ./... -v -cover -race
+	go test -exec sudo ./... -v -cover -race -coverprofile=coverage.txt -covermode=atomic
 
 test-docker:
 	docker build -t durdur-test -q -f images/Dockerfile.tests . && \
