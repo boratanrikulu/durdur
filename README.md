@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/boratanrikulu/durdur/actions/workflows/test.yml/badge.svg)](https://github.com/boratanrikulu/durdur/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/boratanrikulu/durdur)](https://goreportcard.com/report/github.com/boratanrikulu/durdur)
+[![codecov](https://codecov.io/gh/boratanrikulu/durdur/branch/main/graph/badge.svg?token=3ACWW3Y2A0)](https://codecov.io/gh/boratanrikulu/durdur)
 [![LICENSE](https://img.shields.io/github/license/boratanrikulu/durdur.svg)](https://github.com/boratanrikulu/durdur/blob/main/LICENSE)
 
 [Durdur](https://www.youtube.com/watch?v=sF0QweCoaMo) is a CLI tool for Linux implementing L3/L4 packet dropping with eBPF/Go.
