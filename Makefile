@@ -16,7 +16,7 @@ build: generate compile
 build-docker:
 	docker build -t durdur -f images/Dockerfile .
 
-test:
+test: build
 	go test ./... -v -cover -race
 
 test-docker:
