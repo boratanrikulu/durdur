@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-// Drop add new IPs to the maps.
+// Drop add new rules to the maps.
 func Drop(toIPs, fromIPs []net.IP, dnss []string) error {
 	e, err := newEBPFWithLink()
 	if err != nil {

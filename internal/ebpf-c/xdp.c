@@ -117,7 +117,7 @@ static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 }
 
 SEC("xdp_durdur_func")
-int xdp_durdur_drop_func(struct xdp_md *ctx)
+int xdp_durdur_func(struct xdp_md *ctx)
 {
 	void *data = (void *)(long)ctx->data;
 	void *data_end = (void *)(long)ctx->data_end;

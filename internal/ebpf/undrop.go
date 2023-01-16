@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-// Undrop deletes IPs from the maps.
+// Undrop deletes rules from the maps.
 func Undrop(toIPs, fromIPs []net.IP, dnss []string) error {
 	e, err := newEBPFWithLink()
 	if err != nil {

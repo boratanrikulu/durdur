@@ -63,5 +63,5 @@ func (e *EBPF) LoadAttachedLink() error {
 
 // linkPinFile returns FS file address for the link.
 func (e *EBPF) linkPinFile() string {
-	return fmt.Sprintf("%s/%s", FS, "xdp_drop_func_link")
+	return fmt.Sprintf("%s/%s", FS, "xdp_durdur_link")
 }

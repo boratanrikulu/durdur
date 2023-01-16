@@ -92,8 +92,9 @@ func tWrappedFunc(c *qt.C, until string, f func(e *EBPF)) {
 }
 
 // tWait waits.
+// TODO: remove this func usage after you fix "device or resource busy" issue.
 func tWait() {
-	time.Sleep(1 * time.Second) // TODO: remove this line.
+	time.Sleep(1 * time.Second)
 }
 
 // tTCPWrite tests the TCP connection through the address.
