@@ -22,5 +22,11 @@ jobs:
       - name: Install depends
         run: sudo apt install -y --no-install-recommends clang llvm libbpf0 libbpf-dev musl musl-dev gcc-multilib
 
+      - name: debug
+        run: ip a
+
       - name: Test
         run: make test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
