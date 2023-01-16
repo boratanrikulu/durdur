@@ -22,11 +22,11 @@ jobs:
       - name: Install depends
         run: sudo apt install -y --no-install-recommends clang llvm libbpf0 libbpf-dev musl musl-dev gcc-multilib
 
-      - name: debug
-        run: ip a
+      - name: Generate
+        run: make generate
 
       - name: Test
-        run: make test
+        run: go test -exec sudo ./... -v -cover -race -coverprofile=coverage.txt -covermode=atomic
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

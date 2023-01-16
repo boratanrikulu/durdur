@@ -16,7 +16,7 @@ build: generate compile
 build-docker:
 	docker build -t durdur -f images/Dockerfile .
 
-test: build
+test: generate
 	go test -exec sudo ./... -v -cover -race -coverprofile=coverage.txt -covermode=atomic
 
 test-docker:
