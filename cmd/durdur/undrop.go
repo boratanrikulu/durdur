@@ -37,5 +37,29 @@ func undrop(c *cli.Context) error {
 		return errors.New("you need to specify at least 1 rule")
 	}
 
-	return ebpf.Undrop(toIPs, fromIPs, dnss)
+	e, err := ebpf.NewEBPFWithLink()
+	if err != nil {
+		return err
+	}
+	defer e.Close()
+
+	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
+		if len(toIPs) > 0 {
+			if err := e.UndropTo(toIPs...); err != nil {
+				return err
+			}
+		}
+		if len(fromIPs) > 0 {
+			if err := e.UndropFrom(fromIPs...); err != nil {
+				return err
+			}
+		}
+		if len(dnss) > 0 {
+			if err := e.UndropDNS(dnss...); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }

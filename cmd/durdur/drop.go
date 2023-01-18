@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"github.com/boratanrikulu/durdur/internal/ebpf"
-
 	"github.com/urfave/cli/v2"
 )
 
@@ -37,7 +36,25 @@ func drop(c *cli.Context) error {
 		return errors.New("you need to specify at least 1 rule")
 	}
 
-	return ebpf.Drop(toIPs, fromIPs, dnss)
+	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
+		if len(toIPs) > 0 {
+			if err := e.DropTo(toIPs...); err != nil {
+				return err
+			}
+		}
+		if len(fromIPs) > 0 {
+			if err := e.DropFrom(fromIPs...); err != nil {
+				return err
+			}
+		}
+		if len(dnss) > 0 {
+			if err := e.DropDNS(dnss...); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 func dropUndropFlags() []cli.Flag {

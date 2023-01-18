@@ -41,5 +41,7 @@ func attach(c *cli.Context) error {
 
 	ebpf.FS = filepath.Clean(c.String("bpffs"))
 
-	return ebpf.Attach(iface)
+	return ebpf.WrapForDetached(func(e *ebpf.EBPF) error {
+		return e.Attach(iface)
+	})
 }

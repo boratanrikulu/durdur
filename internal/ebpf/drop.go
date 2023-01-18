@@ -5,29 +5,34 @@ import (
 	"net"
 )
 
-// Drop add new rules to the maps.
-func Drop(toIPs, fromIPs []net.IP, dnss []string) error {
-	e, err := newEBPFWithLink()
-	if err != nil {
-		return err
-	}
-	defer e.Close()
-
-	for _, toIP := range toIPs {
-		if err := e.AddToIP(toIP); err != nil {
-			return fmt.Errorf("could not insert TO IP to the map: %w", err)
+func (e *EBPF) DropFrom(froms ...net.IP) error {
+	for _, from := range froms {
+		if err := e.AddFromIP(from); err != nil {
+			return fmt.Errorf("insert FROM ip: %w", err)
 		}
 	}
 
-	for _, fromIP := range fromIPs {
-		if err := e.AddFromIP(fromIP); err != nil {
-			return fmt.Errorf("could not insert FROM IP to the map: %w", err)
+	return nil
+}
+
+func (e *EBPF) DropTo(tos ...net.IP) error {
+	for _, to := range tos {
+		if err := e.AddToIP(to); err != nil {
+			return fmt.Errorf("insert TO ip: %w", err)
 		}
 	}
 
+	return nil
+}
+
+func (e *EBPF) DropDNS(dnss ...string) error {
 	for _, dns := range dnss {
-		if err := e.AddDNS(dns); err != nil {
-			return fmt.Errorf("could not insert DNS to the map: %w", err)
+		key, err := stringToBytes(dns)
+		if err != nil {
+			return err
+		}
+		if err := e.AddDNS(key); err != nil {
+			return fmt.Errorf("insert dns: %w", err)
 		}
 	}
 

@@ -9,12 +9,12 @@ import (
 func TestLoad(t *testing.T) {
 	c := tNew(t)
 
-	e, err := newEBPF()
+	e, err := NewEBPF()
 	c.Assert(err, qt.IsNil)
 	c.Assert(e.Close(), qt.IsNil)
 
-	tWrappedFunc(c, "attach", func(_ *EBPF) {
-		e, err := newEBPFWithLink()
+	newTWrap().Run(c, "attach", func(_ *EBPF) {
+		e, err := NewEBPFWithLink()
 		c.Assert(err, qt.IsNil)
 		c.Assert(e.Close(), qt.IsNil)
 	})
