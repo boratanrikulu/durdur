@@ -8,7 +8,7 @@ import (
 func (e *EBPF) DropFrom(froms ...net.IP) error {
 	for _, from := range froms {
 		if err := e.AddFromIP(from); err != nil {
-			return fmt.Errorf("insert FROM ip: %w", err)
+			return fmt.Errorf("add from-ip: %w", err)
 		}
 	}
 
@@ -18,7 +18,7 @@ func (e *EBPF) DropFrom(froms ...net.IP) error {
 func (e *EBPF) DropTo(tos ...net.IP) error {
 	for _, to := range tos {
 		if err := e.AddToIP(to); err != nil {
-			return fmt.Errorf("insert TO ip: %w", err)
+			return fmt.Errorf("add to-ip: %w", err)
 		}
 	}
 
@@ -32,7 +32,7 @@ func (e *EBPF) DropDNS(dnss ...string) error {
 			return err
 		}
 		if err := e.AddDNS(key); err != nil {
-			return fmt.Errorf("insert dns: %w", err)
+			return fmt.Errorf("add dns: %w", err)
 		}
 	}
 
