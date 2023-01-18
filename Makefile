@@ -9,7 +9,7 @@ generate:
 	go generate ./internal/generated...
 
 compile:
-	go build -o build/durdur ./cmd/durdur
+	CGO_ENABLED=0 go build -o build/durdur ./cmd/durdur
 
 build: generate compile
 
@@ -17,7 +17,7 @@ build-docker:
 	docker build -t durdur -f images/Dockerfile .
 
 test: generate
-	go test -exec sudo ./... -v -cover -race -coverprofile=coverage.txt -covermode=atomic
+	CGO_ENABLED=0 go test -exec sudo ./... -v -cover -coverprofile=coverage.txt -covermode=atomic
 
 test-docker:
 	docker build -t durdur-test -q -f images/Dockerfile.tests . && \
