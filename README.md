@@ -1,6 +1,6 @@
 # Durdur 🐝
 
-[![Build Status](https://github.com/boratanrikulu/durdur/actions/workflows/test.yml/badge.svg)](https://github.com/boratanrikulu/durdur/actions)
+[![Build Status](https://github.com/boratanrikulu/durdur/actions/workflows/test.yml/badge.svg)](https://github.com/boratanrikulu/durdur/actions?query=branch%3Amain)
 [![Go Report Card](https://goreportcard.com/badge/github.com/boratanrikulu/durdur)](https://goreportcard.com/report/github.com/boratanrikulu/durdur)
 [![codecov](https://codecov.io/gh/boratanrikulu/durdur/branch/main/graph/badge.svg?token=3ACWW3Y2A0)](https://codecov.io/gh/boratanrikulu/durdur)
 [![LICENSE](https://img.shields.io/github/license/boratanrikulu/durdur.svg)](https://github.com/boratanrikulu/durdur/blob/main/LICENSE)

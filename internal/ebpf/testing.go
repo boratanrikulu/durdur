@@ -2,7 +2,6 @@ package ebpf
 
 import (
 	"net"
-	"net/http"
 	"testing"
 	"time"
 
@@ -10,11 +9,11 @@ import (
 )
 
 var (
-	tIface     *net.Interface // It is set by tNew().
-	tIfaceStr  = "eth0"
+	tIface    *net.Interface // It is set by tNew().
+	tIfaceStr = "eth0"
+
 	tFromIP    net.IP // It is set by tNew().
 	tFromIPStr = "169.155.49.112"
-	tDNShttps  = "https://quik.do"
 	tDNS       = "quik.do"
 )
 
@@ -27,6 +26,7 @@ func tNew(t *testing.T) *qt.C {
 	if err != nil {
 		c.Fatal(err)
 	}
+
 	tFromIP = net.ParseIP(tFromIPStr)
 
 	return c
@@ -42,63 +42,59 @@ func tDoUntil(c *qt.C, e *EBPF, until string) {
 	switch until {
 	case "attach":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-	case "detach":
-		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.Detach(), qt.IsNil)
 	case "drop-from":
 		c.Assert(e.Attach(tIface), qt.IsNil)
 		c.Assert(e.AddFromIP(tFromIP), qt.IsNil)
-	case "undrop-from":
-		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.AddFromIP(tFromIP), qt.IsNil)
-		c.Assert(e.DeleteFromIP(tFromIP), qt.IsNil)
 	case "drop-dns":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.AddDNS(tDNS), qt.IsNil)
-	case "undrop-dns":
-		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.AddDNS(tDNS), qt.IsNil)
-		c.Assert(e.DeleteDNS(tDNS), qt.IsNil)
+		key, err := stringToBytes(tDNS)
+		c.Assert(err, qt.IsNil)
+		c.Assert(e.AddDNS(key), qt.IsNil)
 	default:
 		c.Fatalf("%s until type is not supported", until)
 	}
 }
 
-// tWrappedFunc follows these steps;
+type tWrap struct {
+	clean bool
+}
+
+func newTWrap() *tWrap {
+	return &tWrap{
+		clean: true,
+	}
+}
+
+// WithoutClean disables calling Detach() after running the test.
+// Be careful when you disable it, you may break other tests.
+func (tw *tWrap) WithoutClean() *tWrap {
+	tw.clean = false
+	return tw
+}
+
+// Run follows these steps;
 //   - makes until-steps
-//   - does the job (f())
-//   - detaches if it's needed
-func tWrappedFunc(c *qt.C, until string, f func(e *EBPF)) {
-	e, err := newEBPF()
+//   - runs the job (f())
+//   - cleans resources if it's needed
+func (tw *tWrap) Run(c *qt.C, until string, f func(e *EBPF)) {
+	e, err := NewEBPF()
 	c.Assert(err, qt.IsNil)
 
 	if until != "" {
 		tDoUntil(c, e, until)
-		tWait()
 	}
 
-	defer func() {
-		if until != "detach" {
-			tWait()
-			if err := e.Detach(); err != nil {
-				c.Fatalf("detach resources: %s", err)
-			}
-		}
-
-		tWait()
-	}()
+	if tw.clean {
+		c.Cleanup(func() {
+			c.Assert(e.Detach(), qt.IsNil)
+		})
+	}
 
 	f(e)
 }
 
-// tWait waits.
-// TODO: remove this func usage after you fix "device or resource busy" issue.
-func tWait() {
-	time.Sleep(1 * time.Second)
-}
-
-// tTCPWrite tests the TCP connection through the address.
-func tTCPWrite(c *qt.C, address string, ok bool) {
+// TTCPWrite tests the TCP connection through the address.
+func TTCPWrite(c *qt.C, address string, ok bool) {
 	conn, err := net.DialTimeout("tcp", address, 2*time.Second)
 	if !ok {
 		c.Assert(err, qt.ErrorMatches, ".* i/o timeout")
@@ -109,10 +105,4 @@ func tTCPWrite(c *qt.C, address string, ok bool) {
 
 	_, err = conn.Write([]byte("hey"))
 	c.Assert(err, qt.IsNil)
-}
-
-func tHTTPClient() *http.Client {
-	return &http.Client{
-		Timeout: 1 * time.Second,
-	}
 }

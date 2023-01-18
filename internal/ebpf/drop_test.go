@@ -2,6 +2,7 @@ package ebpf
 
 import (
 	"fmt"
+	"net"
 	"strings"
 	"testing"
 
@@ -11,44 +12,39 @@ import (
 func TestDrop(t *testing.T) {
 	c := tNew(t)
 
-	t.Run("drop ip", func(t *testing.T) {
-		tWrappedFunc(c, "attach", func(e *EBPF) {
+	c.Run("drop ip", func(c *qt.C) {
+		newTWrap().Run(c, "attach", func(e *EBPF) {
 			address := fmt.Sprintf("%s:443", tFromIPStr)
-			tTCPWrite(c, address, true)
+			TTCPWrite(c, address, true)
 
-			c.Assert(e.AddFromIP(tFromIP), qt.IsNil)
+			c.Assert(e.DropFrom(tFromIP), qt.IsNil)
 
-			tTCPWrite(c, address, false)
+			TTCPWrite(c, address, false)
 		})
 	})
 
-	t.Run("drop dns", func(t *testing.T) {
-		tWrappedFunc(c, "attach", func(e *EBPF) {
-			c.Assert(e.AddDNS(tDNS), qt.IsNil)
+	c.Run("drop dns", func(c *qt.C) {
+		newTWrap().Run(c, "attach", func(e *EBPF) {
+			c.Assert(e.DropDNS(tDNS), qt.IsNil)
 
-			_, err := tHTTPClient().Get(tDNShttps)
+			_, err := net.LookupIP(tDNS)
 			c.Assert(err, qt.IsNotNil)
 		})
 	})
 
-	t.Run("drop dns, too long", func(t *testing.T) {
-		tWrappedFunc(c, "attach", func(e *EBPF) {
+	c.Run("drop dns, too long", func(c *qt.C) {
+		newTWrap().Run(c, "attach", func(e *EBPF) {
 			maxLength := bytesLength - len(tDNS) - 1
 			okUsage := fmt.Sprintf("%s.%s",
 				strings.Repeat("a", maxLength),
 				tDNS,
 			)
-			c.Assert(e.AddDNS(okUsage), qt.IsNil)
+			c.Assert(e.DropDNS(okUsage), qt.IsNil)
 
-			wrongUsage := fmt.Sprintf("%s.%s",
-				strings.Repeat("a", maxLength+1),
-				tDNS,
-			)
-			err := e.AddDNS(wrongUsage)
+			wrongUsage := fmt.Sprintf("%s.%s", strings.Repeat("a", maxLength+1), tDNS)
+			err := e.DropDNS(wrongUsage)
 			c.Assert(err, qt.IsNotNil)
-			c.Assert(err, qt.ErrorMatches,
-				fmt.Sprintf("%s is longer than %d characters", wrongUsage, bytesLength),
-			)
+			c.Assert(err, qt.ErrorIs, ErrInvalidUsage)
 		})
 	})
 }

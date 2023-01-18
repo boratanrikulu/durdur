@@ -5,29 +5,34 @@ import (
 	"net"
 )
 
-// Undrop deletes rules from the maps.
-func Undrop(toIPs, fromIPs []net.IP, dnss []string) error {
-	e, err := newEBPFWithLink()
-	if err != nil {
-		return err
-	}
-	defer e.Close()
-
-	for _, toIP := range toIPs {
-		if err := e.DeleteToIP(toIP); err != nil {
-			return fmt.Errorf("could not delete TO IP from the map: %w", err)
+func (e *EBPF) UndropFrom(froms ...net.IP) error {
+	for _, from := range froms {
+		if err := e.DeleteFromIP(from); err != nil {
+			return fmt.Errorf("delete from-ip: %w", err)
 		}
 	}
 
-	for _, fromIP := range fromIPs {
-		if err := e.DeleteFromIP(fromIP); err != nil {
-			return fmt.Errorf("could not delete FROM IP from the map: %w", err)
+	return nil
+}
+
+func (e *EBPF) UndropTo(tos ...net.IP) error {
+	for _, to := range tos {
+		if err := e.DeleteToIP(to); err != nil {
+			return fmt.Errorf("delete to-ip: %w", err)
 		}
 	}
 
+	return nil
+}
+
+func (e *EBPF) UndropDNS(dnss ...string) error {
 	for _, dns := range dnss {
-		if err := e.DeleteDNS(dns); err != nil {
-			return fmt.Errorf("could not delete DNS from the map: %w", err)
+		key, err := stringToBytes(dns)
+		if err != nil {
+			return err
+		}
+		if err := e.DeleteDNS(key); err != nil {
+			return fmt.Errorf("delete dns: %w", err)
 		}
 	}
 

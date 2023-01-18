@@ -3,9 +3,7 @@ package ebpf
 import (
 	"fmt"
 	"net"
-	"net/http"
 	"testing"
-	"time"
 
 	qt "github.com/frankban/quicktest"
 )
@@ -13,30 +11,23 @@ import (
 func TestUndrop(t *testing.T) {
 	c := tNew(t)
 
-	t.Run("undrop", func(t *testing.T) {
-		tWrappedFunc(c, "drop-from", func(e *EBPF) {
+	c.Run("undrop ip", func(c *qt.C) {
+		newTWrap().Run(c, "drop-from", func(e *EBPF) {
 			address := fmt.Sprintf("%s:443", tFromIPStr)
-			_, err := net.DialTimeout("tcp", address, 2*time.Second)
-			c.Assert(err, qt.ErrorMatches, ".* i/o timeout")
+			TTCPWrite(c, address, false)
 
-			c.Assert(e.DeleteFromIP(tFromIP), qt.IsNil)
+			c.Assert(e.UndropFrom(tFromIP), qt.IsNil)
 
-			conn, err := net.DialTimeout("tcp", address, 2*time.Second)
-			c.Assert(err, qt.IsNil)
-			defer conn.Close()
-
-			_, err = conn.Write([]byte("hey"))
-			c.Assert(err, qt.IsNil)
+			TTCPWrite(c, address, true)
 		})
 	})
 
-	t.Run("undrop", func(t *testing.T) {
-		tWrappedFunc(c, "drop-dns", func(e *EBPF) {
-			c.Assert(e.DeleteDNS(tDNS), qt.IsNil)
+	c.Run("undrop dns", func(c *qt.C) {
+		newTWrap().Run(c, "drop-dns", func(e *EBPF) {
+			c.Assert(e.UndropDNS(tDNS), qt.IsNil)
 
-			resp, err := tHTTPClient().Get(tDNShttps)
+			_, err := net.LookupIP(tDNS)
 			c.Assert(err, qt.IsNil)
-			c.Assert(resp.StatusCode, qt.Equals, http.StatusOK)
 		})
 	})
 }

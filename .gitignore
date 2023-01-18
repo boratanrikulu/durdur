@@ -4,3 +4,6 @@ bpf_bpfeb*
 
 # Builds.
 build/
+
+# Tests.
+coverage.txt

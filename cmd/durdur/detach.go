@@ -27,5 +27,7 @@ func DetachCmd() *cli.Command {
 func detach(c *cli.Context) error {
 	ebpf.FS = filepath.Clean(c.String("bpffs"))
 
-	return ebpf.Detach()
+	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
+		return e.Detach()
+	})
 }
