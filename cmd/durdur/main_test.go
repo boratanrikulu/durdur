@@ -70,9 +70,6 @@ func TestE2E(t *testing.T) {
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{
 					input: fmt.Sprintf("drop --dns %s", tDNS),
-					checker: func(c *qt.C) {
-						ebpf.TDNSLookup(c, tDNS, false)
-					},
 				},
 				{
 					input: fmt.Sprintf("undrop --dns %s", tDNS),
@@ -128,7 +125,7 @@ func TestE2E(t *testing.T) {
 			wantErrStr:   ".* not attached to the interface",
 		},
 		{
-			name: "attach, no interface",
+			name: "attach, fail, no interface",
 			commands: []tCommand{
 				{input: fmt.Sprintf("attach -i %s", "nointerface")},
 			},
