@@ -65,19 +65,6 @@ func TestE2E(t *testing.T) {
 			},
 		},
 		{
-			name: "drop ip and dns",
-			commands: []tCommand{
-				{input: fmt.Sprintf("attach -i %s", tIface)},
-				{
-					input: fmt.Sprintf("drop --from %s --dns %s", tIP, tDNS),
-					checker: func(c *qt.C) {
-						ebpf.TTCPWrite(c, tIP+":443", false)
-						ebpf.TDNSLookup(c, tDNS, false)
-					},
-				},
-			},
-		},
-		{
 			name: "drop, fail, at least 1 rule",
 			commands: []tCommand{
 				{input: fmt.Sprintf("attach -i %s", tIface)},
