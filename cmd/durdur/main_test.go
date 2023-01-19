@@ -65,10 +65,55 @@ func TestE2E(t *testing.T) {
 			},
 		},
 		{
+			name: "undrop dns",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{
+					input: fmt.Sprintf("drop --dns %s", tDNS),
+					checker: func(c *qt.C) {
+						ebpf.TDNSLookup(c, tDNS, false)
+					},
+				},
+				{
+					input: fmt.Sprintf("undrop --dns %s", tDNS),
+					checker: func(c *qt.C) {
+						ebpf.TDNSLookup(c, tDNS, true)
+					},
+				},
+			},
+		},
+		{
+			name: "undrop ip",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{
+					input: fmt.Sprintf("drop --from %s", tIP),
+					checker: func(c *qt.C) {
+						ebpf.TTCPWrite(c, tIP+":443", false)
+					},
+				},
+				{
+					input: fmt.Sprintf("undrop --from %s", tIP),
+					checker: func(c *qt.C) {
+						ebpf.TTCPWrite(c, tIP+":443", true)
+					},
+				},
+			},
+		},
+		{
 			name: "drop, fail, at least 1 rule",
 			commands: []tCommand{
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{input: "drop"},
+			},
+			wantErr:    true,
+			wantErrStr: ".* at least 1 rule",
+		},
+		{
+			name: "undrop, fail, at least 1 rule",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{input: "undrop"},
 			},
 			wantErr:    true,
 			wantErrStr: ".* at least 1 rule",
@@ -81,6 +126,15 @@ func TestE2E(t *testing.T) {
 			withoutClean: true,
 			wantErr:      true,
 			wantErrStr:   ".* not attached to the interface",
+		},
+		{
+			name: "attach, no interface",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", "nointerface")},
+			},
+			withoutClean: true,
+			wantErr:      true,
+			wantErrStr:   ".* no such network interface",
 		},
 	}
 
