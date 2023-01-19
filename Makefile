@@ -17,7 +17,7 @@ build-docker:
 	docker build -t durdur -f images/Dockerfile .
 
 test: generate
-	CGO_ENABLED=0 go test -exec sudo ./... -v -cover -coverprofile=coverage.txt -covermode=atomic
+	CGO_ENABLED=0 go test -exec sudo ./... -v -cover -coverprofile=coverage.txt -covermode=atomic -p=1
 
 test-docker:
 	docker build -t durdur-test -q -f images/Dockerfile.tests . && \

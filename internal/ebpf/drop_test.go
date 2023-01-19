@@ -2,7 +2,6 @@ package ebpf
 
 import (
 	"fmt"
-	"net"
 	"strings"
 	"testing"
 
@@ -27,8 +26,7 @@ func TestDrop(t *testing.T) {
 		newTWrap().Run(c, "attach", func(e *EBPF) {
 			c.Assert(e.DropDNS(tDNS), qt.IsNil)
 
-			_, err := net.LookupIP(tDNS)
-			c.Assert(err, qt.IsNotNil)
+			TDNSLookup(c, tDNS, false)
 		})
 	})
 

@@ -106,3 +106,13 @@ func TTCPWrite(c *qt.C, address string, ok bool) {
 	_, err = conn.Write([]byte("hey"))
 	c.Assert(err, qt.IsNil)
 }
+
+// TDNSLookup tests if the DNS lookup works well.
+func TDNSLookup(c *qt.C, dns string, ok bool) {
+	_, err := net.LookupIP(dns)
+	if !ok {
+		c.Assert(err, qt.IsNotNil)
+		return
+	}
+	c.Assert(err, qt.IsNil)
+}
