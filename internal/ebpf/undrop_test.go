@@ -2,7 +2,6 @@ package ebpf
 
 import (
 	"fmt"
-	"net"
 	"testing"
 
 	qt "github.com/frankban/quicktest"
@@ -26,8 +25,7 @@ func TestUndrop(t *testing.T) {
 		newTWrap().Run(c, "drop-dns", func(e *EBPF) {
 			c.Assert(e.UndropDNS(tDNS), qt.IsNil)
 
-			_, err := net.LookupIP(tDNS)
-			c.Assert(err, qt.IsNil)
+			TDNSLookup(c, tDNS, true)
 		})
 	})
 }
