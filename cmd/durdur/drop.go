@@ -2,10 +2,15 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net"
 
 	"github.com/boratanrikulu/durdur/internal/ebpf"
 	"github.com/urfave/cli/v2"
+)
+
+var (
+	ErrInvalidUsage = errors.New("invalid usage")
 )
 
 func DropCmd() *cli.Command {
@@ -18,32 +23,19 @@ func DropCmd() *cli.Command {
 }
 
 func drop(c *cli.Context) error {
-	tos := c.StringSlice("to")
-	var toIPs []net.IP
-	for _, to := range tos {
-		toIPs = append(toIPs, net.ParseIP(to))
-	}
-
-	froms := c.StringSlice("from")
-	var fromIPs []net.IP
-	for _, from := range froms {
-		fromIPs = append(fromIPs, net.ParseIP(from))
-	}
-
-	dnss := c.StringSlice("dns")
-
-	if len(toIPs)+len(fromIPs)+len(dnss) == 0 {
-		return errors.New("you need to specify at least 1 rule")
+	dsts, srcs, dnss, err := dropUndropParams(c)
+	if err != nil {
+		return err
 	}
 
 	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
-		if len(toIPs) > 0 {
-			if err := e.DropTo(toIPs...); err != nil {
+		if len(dsts) > 0 {
+			if err := e.DropDst(dsts...); err != nil {
 				return err
 			}
 		}
-		if len(fromIPs) > 0 {
-			if err := e.DropFrom(fromIPs...); err != nil {
+		if len(srcs) > 0 {
+			if err := e.DropSrc(srcs...); err != nil {
 				return err
 			}
 		}
@@ -57,16 +49,39 @@ func drop(c *cli.Context) error {
 	})
 }
 
+func dropUndropParams(c *cli.Context) (
+	dstIPs, srcIPs []net.IP, dnss []string, err error,
+) {
+	dsts := c.StringSlice("dst")
+	for _, dst := range dsts {
+		dstIPs = append(dstIPs, net.ParseIP(dst))
+	}
+
+	srcs := c.StringSlice("src")
+	for _, src := range srcs {
+		srcIPs = append(srcIPs, net.ParseIP(src))
+	}
+
+	dnss = c.StringSlice("dns")
+
+	if len(dstIPs)+len(srcIPs)+len(dnss) == 0 {
+		err = fmt.Errorf("you need to specify at least 1 rule: %w", ErrInvalidUsage)
+		return
+	}
+
+	return
+}
+
 func dropUndropFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringSliceFlag{
-			Name:    "to",
-			Aliases: []string{"t"},
+			Name:    "destination",
+			Aliases: []string{"dst"},
 			Usage:   "destination address value of an IPv4 packet",
 		},
 		&cli.StringSliceFlag{
-			Name:    "from",
-			Aliases: []string{"f"},
+			Name:    "source",
+			Aliases: []string{"src"},
 			Usage:   "source address value of an IPv4 packet",
 		},
 		&cli.StringSliceFlag{

@@ -16,7 +16,7 @@ func TestDrop(t *testing.T) {
 			address := fmt.Sprintf("%s:443", tFromIPStr)
 			TTCPWrite(c, address, true)
 
-			c.Assert(e.DropFrom(tFromIP), qt.IsNil)
+			c.Assert(e.DropSrc(tFromIP), qt.IsNil)
 
 			TTCPWrite(c, address, false)
 		})

@@ -44,7 +44,7 @@ func tDoUntil(c *qt.C, e *EBPF, until string) {
 		c.Assert(e.Attach(tIface), qt.IsNil)
 	case "drop-from":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.AddFromIP(tFromIP), qt.IsNil)
+		c.Assert(e.AddSrcIP(tFromIP), qt.IsNil)
 	case "drop-dns":
 		c.Assert(e.Attach(tIface), qt.IsNil)
 		key, err := stringToBytes(tDNS)

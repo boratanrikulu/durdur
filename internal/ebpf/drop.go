@@ -5,20 +5,20 @@ import (
 	"net"
 )
 
-func (e *EBPF) DropFrom(froms ...net.IP) error {
+func (e *EBPF) DropSrc(froms ...net.IP) error {
 	for _, from := range froms {
-		if err := e.AddFromIP(from); err != nil {
-			return fmt.Errorf("add from-ip: %w", err)
+		if err := e.AddSrcIP(from); err != nil {
+			return fmt.Errorf("add src-ip: %w", err)
 		}
 	}
 
 	return nil
 }
 
-func (e *EBPF) DropTo(tos ...net.IP) error {
+func (e *EBPF) DropDst(tos ...net.IP) error {
 	for _, to := range tos {
-		if err := e.AddToIP(to); err != nil {
-			return fmt.Errorf("add to-ip: %w", err)
+		if err := e.AddDstIP(to); err != nil {
+			return fmt.Errorf("add dst-ip: %w", err)
 		}
 	}
 

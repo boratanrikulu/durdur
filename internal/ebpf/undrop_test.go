@@ -15,7 +15,7 @@ func TestUndrop(t *testing.T) {
 			address := fmt.Sprintf("%s:443", tFromIPStr)
 			TTCPWrite(c, address, false)
 
-			c.Assert(e.UndropFrom(tFromIP), qt.IsNil)
+			c.Assert(e.UndropSrc(tFromIP), qt.IsNil)
 
 			TTCPWrite(c, address, true)
 		})
