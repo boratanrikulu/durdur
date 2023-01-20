@@ -11,11 +11,11 @@ func TestUndrop(t *testing.T) {
 	c := tNew(t)
 
 	c.Run("undrop ip", func(c *qt.C) {
-		newTWrap().Run(c, "drop-from", func(e *EBPF) {
-			address := fmt.Sprintf("%s:443", tFromIPStr)
+		newTWrap().Run(c, "drop-src", func(e *EBPF) {
+			address := fmt.Sprintf("%s:443", tSrcIpStr)
 			TTCPWrite(c, address, false)
 
-			c.Assert(e.UndropSrc(tFromIP), qt.IsNil)
+			c.Assert(e.UndropSrc(tSrcIP), qt.IsNil)
 
 			TTCPWrite(c, address, true)
 		})

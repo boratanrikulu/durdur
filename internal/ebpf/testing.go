@@ -12,9 +12,9 @@ var (
 	tIface    *net.Interface // It is set by tNew().
 	tIfaceStr = "eth0"
 
-	tFromIP    net.IP // It is set by tNew().
-	tFromIPStr = "169.155.49.112"
-	tDNS       = "quik.do"
+	tSrcIP    net.IP // It is set by tNew().
+	tSrcIpStr = "169.155.49.112"
+	tDNS      = "quik.do"
 )
 
 // tNew initializes testing variables and returns *qt.C.
@@ -27,7 +27,7 @@ func tNew(t *testing.T) *qt.C {
 		c.Fatal(err)
 	}
 
-	tFromIP = net.ParseIP(tFromIPStr)
+	tSrcIP = net.ParseIP(tSrcIpStr)
 
 	return c
 }
@@ -35,16 +35,15 @@ func tNew(t *testing.T) *qt.C {
 // tDoUntil is able to do pre-steps for testings.
 // Supported until-steps;
 // - attach
-// - detach
-// - drop-from
-// - undrop-from
+// - drop-src
+// - drop-dns
 func tDoUntil(c *qt.C, e *EBPF, until string) {
 	switch until {
 	case "attach":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-	case "drop-from":
+	case "drop-src":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.AddSrcIP(tFromIP), qt.IsNil)
+		c.Assert(e.AddSrcIP(tSrcIP), qt.IsNil)
 	case "drop-dns":
 		c.Assert(e.Attach(tIface), qt.IsNil)
 		key, err := stringToBytes(tDNS)

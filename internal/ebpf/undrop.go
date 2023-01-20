@@ -5,9 +5,9 @@ import (
 	"net"
 )
 
-func (e *EBPF) UndropSrc(froms ...net.IP) error {
-	for _, from := range froms {
-		if err := e.DeleteSrcIP(from); err != nil {
+func (e *EBPF) UndropSrc(srcs ...net.IP) error {
+	for _, src := range srcs {
+		if err := e.DeleteSrcIP(src); err != nil {
 			return fmt.Errorf("delete src-ip: %w", err)
 		}
 	}
@@ -15,9 +15,9 @@ func (e *EBPF) UndropSrc(froms ...net.IP) error {
 	return nil
 }
 
-func (e *EBPF) UndropDst(tos ...net.IP) error {
-	for _, to := range tos {
-		if err := e.DeleteDstIP(to); err != nil {
+func (e *EBPF) UndropDst(dsts ...net.IP) error {
+	for _, dst := range dsts {
+		if err := e.DeleteDstIP(dst); err != nil {
 			return fmt.Errorf("delete dst-ip: %w", err)
 		}
 	}

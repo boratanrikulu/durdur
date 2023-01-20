@@ -13,10 +13,10 @@ func TestDrop(t *testing.T) {
 
 	c.Run("drop ip", func(c *qt.C) {
 		newTWrap().Run(c, "attach", func(e *EBPF) {
-			address := fmt.Sprintf("%s:443", tFromIPStr)
+			address := fmt.Sprintf("%s:443", tSrcIpStr)
 			TTCPWrite(c, address, true)
 
-			c.Assert(e.DropSrc(tFromIP), qt.IsNil)
+			c.Assert(e.DropSrc(tSrcIP), qt.IsNil)
 
 			TTCPWrite(c, address, false)
 		})
