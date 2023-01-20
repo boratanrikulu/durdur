@@ -29,8 +29,8 @@ func (e *EBPF) Load() error {
 		return fmt.Errorf("load ebpf: %w", err)
 	}
 
-	spec.Maps["drop_from_addrs"].Pinning = ebpf.PinByName
-	spec.Maps["drop_to_addrs"].Pinning = ebpf.PinByName
+	spec.Maps["drop_src_addrs"].Pinning = ebpf.PinByName
+	spec.Maps["drop_dst_addrs"].Pinning = ebpf.PinByName
 	spec.Maps["drop_dns"].Pinning = ebpf.PinByName
 	if err := spec.LoadAndAssign(e.Objects, &ebpf.CollectionOptions{
 		Maps: ebpf.MapOptions{

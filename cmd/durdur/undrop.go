@@ -1,9 +1,6 @@
 package main
 
 import (
-	"errors"
-	"net"
-
 	"github.com/boratanrikulu/durdur/internal/ebpf"
 
 	"github.com/urfave/cli/v2"
@@ -19,22 +16,9 @@ func UndropCmd() *cli.Command {
 }
 
 func undrop(c *cli.Context) error {
-	tos := c.StringSlice("to")
-	var toIPs []net.IP
-	for _, to := range tos {
-		toIPs = append(toIPs, net.ParseIP(to))
-	}
-
-	froms := c.StringSlice("from")
-	var fromIPs []net.IP
-	for _, from := range froms {
-		fromIPs = append(fromIPs, net.ParseIP(from))
-	}
-
-	dnss := c.StringSlice("dns")
-
-	if len(toIPs)+len(fromIPs)+len(dnss) == 0 {
-		return errors.New("you need to specify at least 1 rule")
+	dsts, srcs, dnss, err := dropUndropParams(c)
+	if err != nil {
+		return err
 	}
 
 	e, err := ebpf.NewEBPFWithLink()
@@ -44,13 +28,13 @@ func undrop(c *cli.Context) error {
 	defer e.Close()
 
 	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
-		if len(toIPs) > 0 {
-			if err := e.UndropTo(toIPs...); err != nil {
+		if len(dsts) > 0 {
+			if err := e.UndropDst(dsts...); err != nil {
 				return err
 			}
 		}
-		if len(fromIPs) > 0 {
-			if err := e.UndropFrom(fromIPs...); err != nil {
+		if len(srcs) > 0 {
+			if err := e.UndropSrc(srcs...); err != nil {
 				return err
 			}
 		}

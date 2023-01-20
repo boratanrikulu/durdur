@@ -9,17 +9,17 @@ var (
 	ErrInsertToMap = errors.New("could not insert to map")
 )
 
-// Add puts given TO IP to the Map.
-func (e *EBPF) AddToIP(ip net.IP) error {
-	if err := e.Objects.DropToAddrs.Put(ip.To4(), uint64(0)); err != nil {
+// Add puts given DST IP to the Map.
+func (e *EBPF) AddDstIP(ip net.IP) error {
+	if err := e.Objects.DropDstAddrs.Put(ip.To4(), uint64(0)); err != nil {
 		return ErrInsertToMap
 	}
 	return nil
 }
 
-// Add puts given FROM IP to the Map.
-func (e *EBPF) AddFromIP(ip net.IP) error {
-	if err := e.Objects.DropFromAddrs.Put(ip.To4(), uint64(0)); err != nil {
+// Add puts given SRC IP to the Map.
+func (e *EBPF) AddSrcIP(ip net.IP) error {
+	if err := e.Objects.DropSrcAddrs.Put(ip.To4(), uint64(0)); err != nil {
 		return ErrInsertToMap
 	}
 	return nil
@@ -33,17 +33,17 @@ func (e *EBPF) AddDNS(dns [bytesLength]byte) error {
 	return nil
 }
 
-// DeleteToIP deletes given TO IP from the Map.
-func (e *EBPF) DeleteToIP(ip net.IP) error {
-	if err := e.Objects.DropToAddrs.Delete(ip.To4()); err != nil {
+// DeleteToIP deletes given DST IP from the Map.
+func (e *EBPF) DeleteDstIP(ip net.IP) error {
+	if err := e.Objects.DropDstAddrs.Delete(ip.To4()); err != nil {
 		return ErrInsertToMap
 	}
 	return nil
 }
 
-// DeleteToIP deletes given FROM IP from the Map.
-func (e *EBPF) DeleteFromIP(ip net.IP) error {
-	if err := e.Objects.DropFromAddrs.Delete(ip.To4()); err != nil {
+// DeleteToIP deletes given SRC IP from the Map.
+func (e *EBPF) DeleteSrcIP(ip net.IP) error {
+	if err := e.Objects.DropSrcAddrs.Delete(ip.To4()); err != nil {
 		return ErrInsertToMap
 	}
 	return nil

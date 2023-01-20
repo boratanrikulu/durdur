@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <linux/ip.h>
 #include <linux/udp.h>
+
 #include <string.h>
 #include <stdarg.h>
 
@@ -15,12 +16,12 @@
 // To see debug logs, set "#define DEBUG 1"
 // and watch "/sys/kernel/debug/tracing/trace_pipe" file.
 #ifdef DEBUG
-#define printk(fmt, ...)                                           \
-	({                                                             \
+#define printk(fmt, ...)                                   \
+	({                                                     \
 		bpf_trace_printk(fmt, sizeof(fmt), ##__VA_ARGS__); \
 	})
 #else
-#define printk(fmt, ...)  
+#define printk(fmt, ...)
 #endif
 
 struct dnshdr
@@ -53,7 +54,7 @@ struct
 	__type(key, __u32);
 	__type(value, long);
 	__uint(max_entries, MAX_ENTRIES);
-} drop_to_addrs SEC(".maps");
+} drop_dst_addrs SEC(".maps");
 
 struct
 {
@@ -61,7 +62,7 @@ struct
 	__type(key, __u32);
 	__type(value, long);
 	__uint(max_entries, MAX_ENTRIES);
-} drop_from_addrs SEC(".maps");
+} drop_src_addrs SEC(".maps");
 
 struct
 {
@@ -100,7 +101,8 @@ static int parse_query(void *data_end, void *query_start, struct dnsquery *q)
 				return -1; // packet is too short.
 			}
 			label_cursor = new_label_length;
-			if (i == -1) {
+			if (i == -1)
+			{
 				// This is the first label, no need to set '.'
 				continue;
 			}
@@ -136,13 +138,13 @@ int xdp_durdur_func(struct xdp_md *ctx)
 	struct iphdr *ip = data + sizeof(struct ethhdr);
 
 	__u32 ip_drc = ip->daddr;
-	if (bpf_map_lookup_elem(&drop_to_addrs, &ip_drc))
+	if (bpf_map_lookup_elem(&drop_dst_addrs, &ip_drc))
 	{
 		return XDP_DROP;
 	}
 
 	__u32 ip_src = ip->saddr;
-	if (bpf_map_lookup_elem(&drop_from_addrs, &ip_src))
+	if (bpf_map_lookup_elem(&drop_src_addrs, &ip_src))
 	{
 		return XDP_DROP;
 	}

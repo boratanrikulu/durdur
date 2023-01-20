@@ -21,8 +21,8 @@ func (e *EBPF) Detach() error {
 	}
 
 	for _, m := range []*ebpf.Map{
-		e.Objects.BpfMaps.DropFromAddrs,
-		e.Objects.BpfMaps.DropToAddrs,
+		e.Objects.BpfMaps.DropSrcAddrs,
+		e.Objects.BpfMaps.DropDstAddrs,
 		e.Objects.BpfMaps.DropDns,
 	} {
 		if err := m.Unpin(); err != nil {

@@ -35,14 +35,14 @@ durdur detach
 **`drop`** and **`undrop`** checks all L3 and L4 packets in the system and either block or allow them.  
 Both commands support the following flags:  
 
-- **`to`** for the destination address value of an IPv4 packet.
-- **`from`** for the source address value of an IPv4 packet.
+- **`dst`** for the destination address value of an IPv4 packet.
+- **`src`** for the source address value of an IPv4 packet.
 - **`dns`** for the domain value of a DNS packet.
 
 Example usage for **`drop`**;
 
 ```sh
-durdur drop --from "192.0.1.1"
+durdur drop --src "192.0.1.1"
 ```
 
 ```sh
@@ -52,7 +52,7 @@ durdur drop --dns "example.com"
 Example usage for **`undrop`**;
 
 ```sh
-durdur undrop --from "192.0.1.1"
+durdur undrop --src "192.0.1.1"
 ```
 
 ```sh

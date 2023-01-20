@@ -57,7 +57,7 @@ func TestE2E(t *testing.T) {
 			commands: []tCommand{
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{
-					input: fmt.Sprintf("drop --from %s", tIP),
+					input: fmt.Sprintf("drop --src %s", tIP),
 					checker: func(c *qt.C) {
 						ebpf.TTCPWrite(c, tIP+":443", false)
 					},
@@ -84,13 +84,13 @@ func TestE2E(t *testing.T) {
 			commands: []tCommand{
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{
-					input: fmt.Sprintf("drop --from %s", tIP),
+					input: fmt.Sprintf("drop --src %s", tIP),
 					checker: func(c *qt.C) {
 						ebpf.TTCPWrite(c, tIP+":443", false)
 					},
 				},
 				{
-					input: fmt.Sprintf("undrop --from %s", tIP),
+					input: fmt.Sprintf("undrop --src %s", tIP),
 					checker: func(c *qt.C) {
 						ebpf.TTCPWrite(c, tIP+":443", true)
 					},
@@ -104,7 +104,7 @@ func TestE2E(t *testing.T) {
 				{input: "drop"},
 			},
 			wantErr:    true,
-			wantErrStr: ".* at least 1 rule",
+			wantErrStr: ".* at least 1 rule.*",
 		},
 		{
 			name: "undrop, fail, at least 1 rule",
@@ -113,7 +113,7 @@ func TestE2E(t *testing.T) {
 				{input: "undrop"},
 			},
 			wantErr:    true,
-			wantErrStr: ".* at least 1 rule",
+			wantErrStr: ".* at least 1 rule.*",
 		},
 		{
 			name: "detach, fail, non attach",
