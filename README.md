@@ -91,10 +91,11 @@ PS: You don't need to use `--net="host"` if you don't want to access host's inte
 
 ## TODO
 
-- [ ] Add wildcard support to DNS.
-- [ ] Add IPv6 support.
-- [ ] Add **`list`** command for added rules.
-- [ ] Add port support
+- [ ] Egress support.
+- [ ] Wildcard support to DNS.
+- [ ] IPv6 support.
+- [ ] **`list`** command for added rules.
+- [ ] Port support.
 
 ## Copyright
 
