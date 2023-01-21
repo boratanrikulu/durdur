@@ -32,10 +32,9 @@ durdur detach
 
 ### Drop and Undrop
 
-**`drop`** and **`undrop`** checks all L3 and L4 packets in the system and either block or allow them.  
+**`drop`** and **`undrop`** checks all (ingress) L3 and L4 packets in the system and either block or allow them.  
 Both commands support the following flags:  
 
-- **`dst`** for the destination address value of an IPv4 packet.
 - **`src`** for the source address value of an IPv4 packet.
 - **`dns`** for the domain value of a DNS packet.
 

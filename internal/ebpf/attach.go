@@ -27,11 +27,12 @@ func (e *EBPF) Attach(iface *net.Interface) error {
 		Interface: iface.Index,
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("attach: %w", err)
 	}
 
 	if err := l.Pin(e.linkPinFile()); err != nil {
-		return err
+		// TODO: fix multiple interface usage issue.
+		return fmt.Errorf("pin link: %w", err)
 	}
 
 	e.L = l

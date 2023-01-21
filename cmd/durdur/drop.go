@@ -23,17 +23,12 @@ func DropCmd() *cli.Command {
 }
 
 func drop(c *cli.Context) error {
-	dsts, srcs, dnss, err := dropUndropParams(c)
+	srcs, dnss, err := dropUndropParams(c)
 	if err != nil {
 		return err
 	}
 
 	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
-		if len(dsts) > 0 {
-			if err := e.DropDst(dsts...); err != nil {
-				return err
-			}
-		}
 		if len(srcs) > 0 {
 			if err := e.DropSrc(srcs...); err != nil {
 				return err
@@ -49,14 +44,7 @@ func drop(c *cli.Context) error {
 	})
 }
 
-func dropUndropParams(c *cli.Context) (
-	dstIPs, srcIPs []net.IP, dnss []string, err error,
-) {
-	dsts := c.StringSlice("dst")
-	for _, dst := range dsts {
-		dstIPs = append(dstIPs, net.ParseIP(dst))
-	}
-
+func dropUndropParams(c *cli.Context) (srcIPs []net.IP, dnss []string, err error) {
 	srcs := c.StringSlice("src")
 	for _, src := range srcs {
 		srcIPs = append(srcIPs, net.ParseIP(src))
@@ -64,7 +52,7 @@ func dropUndropParams(c *cli.Context) (
 
 	dnss = c.StringSlice("dns")
 
-	if len(dstIPs)+len(srcIPs)+len(dnss) == 0 {
+	if len(srcIPs)+len(dnss) == 0 {
 		err = fmt.Errorf("you need to specify at least 1 rule: %w", ErrInvalidUsage)
 		return
 	}
