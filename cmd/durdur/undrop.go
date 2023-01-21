@@ -16,7 +16,7 @@ func UndropCmd() *cli.Command {
 }
 
 func undrop(c *cli.Context) error {
-	dsts, srcs, dnss, err := dropUndropParams(c)
+	srcs, dnss, err := dropUndropParams(c)
 	if err != nil {
 		return err
 	}
@@ -28,11 +28,6 @@ func undrop(c *cli.Context) error {
 	defer e.Close()
 
 	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
-		if len(dsts) > 0 {
-			if err := e.UndropDst(dsts...); err != nil {
-				return err
-			}
-		}
 		if len(srcs) > 0 {
 			if err := e.UndropSrc(srcs...); err != nil {
 				return err

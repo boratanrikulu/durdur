@@ -15,16 +15,6 @@ func (e *EBPF) UndropSrc(srcs ...net.IP) error {
 	return nil
 }
 
-func (e *EBPF) UndropDst(dsts ...net.IP) error {
-	for _, dst := range dsts {
-		if err := e.DeleteDstIP(dst); err != nil {
-			return fmt.Errorf("delete dst-ip: %w", err)
-		}
-	}
-
-	return nil
-}
-
 func (e *EBPF) UndropDNS(dnss ...string) error {
 	for _, dns := range dnss {
 		key, err := stringToBytes(dns)
