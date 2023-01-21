@@ -54,14 +54,6 @@ struct
 	__type(key, __u32);
 	__type(value, long);
 	__uint(max_entries, MAX_ENTRIES);
-} drop_dst_addrs SEC(".maps");
-
-struct
-{
-	__uint(type, BPF_MAP_TYPE_HASH);
-	__type(key, __u32);
-	__type(value, long);
-	__uint(max_entries, MAX_ENTRIES);
 } drop_src_addrs SEC(".maps");
 
 struct
@@ -136,12 +128,6 @@ int xdp_durdur_func(struct xdp_md *ctx)
 	}
 
 	struct iphdr *ip = data + sizeof(struct ethhdr);
-
-	__u32 ip_drc = ip->daddr;
-	if (bpf_map_lookup_elem(&drop_dst_addrs, &ip_drc))
-	{
-		return XDP_DROP;
-	}
 
 	__u32 ip_src = ip->saddr;
 	if (bpf_map_lookup_elem(&drop_src_addrs, &ip_src))

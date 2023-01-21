@@ -30,7 +30,6 @@ func (e *EBPF) Load() error {
 	}
 
 	spec.Maps["drop_src_addrs"].Pinning = ebpf.PinByName
-	spec.Maps["drop_dst_addrs"].Pinning = ebpf.PinByName
 	spec.Maps["drop_dns"].Pinning = ebpf.PinByName
 	if err := spec.LoadAndAssign(e.Objects, &ebpf.CollectionOptions{
 		Maps: ebpf.MapOptions{
