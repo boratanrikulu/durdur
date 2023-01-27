@@ -43,12 +43,10 @@ func tDoUntil(c *qt.C, e *EBPF, until string) {
 		c.Assert(e.Attach(tIface), qt.IsNil)
 	case "drop-src":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-		c.Assert(e.AddSrcIP(tSrcIP), qt.IsNil)
+		c.Assert(e.DropSrc(tSrcIP), qt.IsNil)
 	case "drop-dns":
 		c.Assert(e.Attach(tIface), qt.IsNil)
-		key, err := stringToBytes(tDNS)
-		c.Assert(err, qt.IsNil)
-		c.Assert(e.AddDNS(key), qt.IsNil)
+		c.Assert(e.DropDNS(tDNS), qt.IsNil)
 	default:
 		c.Fatalf("%s until type is not supported", until)
 	}

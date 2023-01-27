@@ -11,7 +11,7 @@
 
 ## How to use
 
-Durdur is easy to use with just four commands: **`attach`**, **`detach`**, **`drop`**, and **`undrop`**.  
+Durdur is easy to use with these commands: **`attach`**, **`detach`**, **`drop`**, **`undrop`**, **`list`**.  
 All commands should be run with **root privileges**.
 
 ### Attach
@@ -58,6 +58,18 @@ durdur undrop --src "192.0.1.1"
 durdur undrop --dns "example.com"
 ```
 
+### List
+
+`list` has 2 subcommands; `src` and `dns`.
+
+Example usage for **`list`**;
+```sh
+durdur list src
+```  
+```sh
+durdur list dns
+```
+
 ## How to install
 
 ### From source;
@@ -94,7 +106,7 @@ PS: You don't need to use `--net="host"` if you don't want to access host's inte
 - [ ] Egress support.
 - [ ] Wildcard support to DNS.
 - [ ] IPv6 support.
-- [ ] **`list`** command for added rules.
+- [ ] Multiple interfaces support.
 - [ ] Port support.
 
 ## Copyright

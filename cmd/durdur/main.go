@@ -22,6 +22,7 @@ func app() *cli.App {
 			DetachCmd(),
 			DropCmd(),
 			UndropCmd(),
+			ListCmd(),
 		},
 	}
 }
