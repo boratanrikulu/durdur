@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -20,7 +22,7 @@ var (
 
 type tCommand struct {
 	input   string
-	checker func(c *qt.C)
+	checker func(c *qt.C, output *bytes.Buffer)
 }
 
 func TestE2E(t *testing.T) {
@@ -46,7 +48,7 @@ func TestE2E(t *testing.T) {
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{
 					input: fmt.Sprintf("drop --dns %s", tDNS),
-					checker: func(c *qt.C) {
+					checker: func(c *qt.C, _ *bytes.Buffer) {
 						ebpf.TDNSLookup(c, tDNS, false)
 					},
 				},
@@ -58,7 +60,7 @@ func TestE2E(t *testing.T) {
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{
 					input: fmt.Sprintf("drop --src %s", tIP),
-					checker: func(c *qt.C) {
+					checker: func(c *qt.C, _ *bytes.Buffer) {
 						ebpf.TTCPWrite(c, tIP+":443", false)
 					},
 				},
@@ -73,7 +75,7 @@ func TestE2E(t *testing.T) {
 				},
 				{
 					input: fmt.Sprintf("undrop --dns %s", tDNS),
-					checker: func(c *qt.C) {
+					checker: func(c *qt.C, _ *bytes.Buffer) {
 						ebpf.TDNSLookup(c, tDNS, true)
 					},
 				},
@@ -85,14 +87,64 @@ func TestE2E(t *testing.T) {
 				{input: fmt.Sprintf("attach -i %s", tIface)},
 				{
 					input: fmt.Sprintf("drop --src %s", tIP),
-					checker: func(c *qt.C) {
+					checker: func(c *qt.C, _ *bytes.Buffer) {
 						ebpf.TTCPWrite(c, tIP+":443", false)
 					},
 				},
 				{
 					input: fmt.Sprintf("undrop --src %s", tIP),
-					checker: func(c *qt.C) {
+					checker: func(c *qt.C, _ *bytes.Buffer) {
 						ebpf.TTCPWrite(c, tIP+":443", true)
+					},
+				},
+			},
+		},
+		{
+			name: "list ip",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{input: fmt.Sprintf("drop --src %s", tIP)},
+				{
+					input: "list src",
+					checker: func(c *qt.C, o *bytes.Buffer) {
+						srcList := make(map[string]int)
+						c.Assert(json.Unmarshal(o.Bytes(), &srcList), qt.IsNil)
+						_, ok := srcList[tIP]
+						c.Assert(ok, qt.IsTrue)
+					},
+				},
+			},
+		},
+		{
+			name: "list dns",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{input: fmt.Sprintf("drop --dns %s", tDNS)},
+				{
+					input: "list dns",
+					checker: func(c *qt.C, o *bytes.Buffer) {
+						dnsList := make(map[string]int)
+						c.Assert(json.Unmarshal(o.Bytes(), &dnsList), qt.IsNil)
+						_, ok := dnsList[tDNS]
+						c.Assert(ok, qt.IsTrue)
+					},
+				},
+			},
+		},
+		{
+			name: "list all",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{input: fmt.Sprintf("drop --src %s --dns %s", tIP, tDNS)},
+				{
+					input: "list all",
+					checker: func(c *qt.C, o *bytes.Buffer) {
+						list := make(map[string]int)
+						c.Assert(json.Unmarshal(o.Bytes(), &list), qt.IsNil)
+						_, ok := list[tIP]
+						c.Assert(ok, qt.IsTrue)
+						_, ok = list[tDNS]
+						c.Assert(ok, qt.IsTrue)
 					},
 				},
 			},
@@ -137,6 +189,9 @@ func TestE2E(t *testing.T) {
 
 	for _, test := range tests {
 		c.Run(test.name, func(c *qt.C) {
+			output := new(bytes.Buffer)
+			cli.Writer = output
+
 			if !test.withoutClean {
 				c.Cleanup(func() {
 					c.Assert(cli.Run(args("detach")), qt.IsNil)
@@ -151,7 +206,7 @@ func TestE2E(t *testing.T) {
 					c.Assert(err, qt.ErrorMatches, test.wantErrStr)
 				}
 				if command.checker != nil {
-					command.checker(c)
+					command.checker(c, output)
 				}
 			}
 		})

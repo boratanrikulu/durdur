@@ -3,6 +3,7 @@ package ebpf
 import (
 	"errors"
 	"fmt"
+	"net"
 )
 
 var (
@@ -19,4 +20,8 @@ func stringToBytes(input string) ([bytesLength]byte, error) {
 	}
 	copy(output[:], bs)
 	return output, nil
+}
+
+func uint32ToNetIP(val uint32) net.IP {
+	return net.IPv4(byte(val&0xFF), byte(val>>8)&0xFF, byte(val>>16&0xFF), byte(val>>24))
 }

@@ -130,8 +130,10 @@ int xdp_durdur_func(struct xdp_md *ctx)
 	struct iphdr *ip = data + sizeof(struct ethhdr);
 
 	__u32 ip_src = ip->saddr;
-	if (bpf_map_lookup_elem(&drop_src_addrs, &ip_src))
+	long *pkt_count = bpf_map_lookup_elem(&drop_src_addrs, &ip_src);
+	if (pkt_count)
 	{
+		__sync_fetch_and_add(pkt_count, 1);
 		return XDP_DROP;
 	}
 
@@ -162,9 +164,11 @@ int xdp_durdur_func(struct xdp_md *ctx)
 					return XDP_PASS;
 				}
 
-				if (bpf_map_lookup_elem(&drop_dns, &query.name))
+				long *pkt_count = bpf_map_lookup_elem(&drop_dns, &query.name);
+				if (pkt_count)
 				{
 					printk("[BLOCK] DNS QUERY TO %s", &query.name);
+					__sync_fetch_and_add(pkt_count, 1);
 					return XDP_DROP;
 				}
 				printk("[ALLOW] DNS QUERY TO %s", &query.name);
