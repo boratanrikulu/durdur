@@ -60,7 +60,7 @@ durdur undrop --dns "example.com"
 
 ### List
 
-`list` has 2 subcommands; `src` and `dns`.
+`list` writes all entires of the maps to the stdout. It has 3 subcommands; `src`, `dns`, and `all`.
 
 Example usage for **`list`**;
 ```sh
@@ -68,6 +68,9 @@ durdur list src
 ```  
 ```sh
 durdur list dns
+```
+```sh
+durdur list all
 ```
 
 ## How to install

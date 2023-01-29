@@ -132,6 +132,24 @@ func TestE2E(t *testing.T) {
 			},
 		},
 		{
+			name: "list all",
+			commands: []tCommand{
+				{input: fmt.Sprintf("attach -i %s", tIface)},
+				{input: fmt.Sprintf("drop --src %s --dns %s", tIP, tDNS)},
+				{
+					input: "list all",
+					checker: func(c *qt.C, o *bytes.Buffer) {
+						list := make(map[string]int)
+						c.Assert(json.Unmarshal(o.Bytes(), &list), qt.IsNil)
+						_, ok := list[tIP]
+						c.Assert(ok, qt.IsTrue)
+						_, ok = list[tDNS]
+						c.Assert(ok, qt.IsTrue)
+					},
+				},
+			},
+		},
+		{
 			name: "drop, fail, at least 1 rule",
 			commands: []tCommand{
 				{input: fmt.Sprintf("attach -i %s", tIface)},
