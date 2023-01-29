@@ -10,21 +10,21 @@ import (
 func ListCmd() *cli.Command {
 	return &cli.Command{
 		Name:  "list",
-		Usage: "List maps",
+		Usage: "List all blocked values",
 		Subcommands: []*cli.Command{
 			{
 				Name:   "src",
-				Usage:  "List all blocked source address values",
+				Usage:  "Lists all blocked source address values",
 				Action: listSrc,
 			},
 			{
 				Name:   "dns",
-				Usage:  "List all blocked domain values",
+				Usage:  "Lists all blocked domain values",
 				Action: listDNS,
 			},
 			{
 				Name:   "all",
-				Usage:  "List all blocked source addres and domain values",
+				Usage:  "Lists all blocked source addres and domain values",
 				Action: listAll,
 			},
 		},
