@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/boratanrikulu/durdur/internal/ebpf"
 
 	"github.com/urfave/cli/v2"
@@ -33,18 +31,18 @@ func listSrc(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(srcList) // TODO: fancy print.
-		return nil
+
+		return marshalAndWrite(c, &srcList)
 	})
 }
 
 func listDNS(c *cli.Context) error {
 	return ebpf.WrapForAttached(func(e *ebpf.EBPF) error {
-		srcList, err := e.ListDNS()
+		dnsList, err := e.ListDNS()
 		if err != nil {
 			return err
 		}
-		fmt.Println(srcList) // TODO: fancy print.
-		return nil
+
+		return marshalAndWrite(c, &dnsList)
 	})
 }

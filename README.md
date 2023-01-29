@@ -11,7 +11,7 @@
 
 ## How to use
 
-Durdur is easy to use with these commands: **`attach`**, **`detach`**, **`drop`**, **`undrop`**, **`list`**.  
+Durdur is easy to use with these commands: **`attach`**, **`detach`**, **`drop`**, **`undrop`**, and **`list`**.  
 All commands should be run with **root privileges**.
 
 ### Attach
