@@ -63,11 +63,6 @@ func dropUndropParams(c *cli.Context) (srcIPs []net.IP, dnss []string, err error
 func dropUndropFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringSliceFlag{
-			Name:    "destination",
-			Aliases: []string{"dst"},
-			Usage:   "destination address value of an IPv4 packet",
-		},
-		&cli.StringSliceFlag{
 			Name:    "source",
 			Aliases: []string{"src"},
 			Usage:   "source address value of an IPv4 packet",

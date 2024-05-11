@@ -10,7 +10,7 @@ import (
 func ListCmd() *cli.Command {
 	return &cli.Command{
 		Name:  "list",
-		Usage: "List all blocked values",
+		Usage: "Lists all blocked values",
 		Subcommands: []*cli.Command{
 			{
 				Name:   "src",
