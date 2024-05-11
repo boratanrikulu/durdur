@@ -16,8 +16,8 @@ import (
 var (
 	tIface = "eth0"
 
-	tDNS = "echo.bora.sh"
-	tIP  = "149.248.213.227"
+	tDNS = "quik.bora.sh"
+	tIP  = "169.155.49.112"
 )
 
 type tCommand struct {
