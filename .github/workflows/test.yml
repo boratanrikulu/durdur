@@ -39,5 +39,12 @@ jobs:
       - name: Generate
         run: make generate
 
+      - name: Debug
+        run: |
+          sudo ./build/durdur attach -i ens3
+          sudo ./build/durdur drop --src "169.155.49.112"
+          ping -c 1 -I ens3 169.155.49.112
+          sudo ./build/durdur detach
+
       - name: Test
         run: make test
