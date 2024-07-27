@@ -42,9 +42,12 @@ jobs:
       - name: Debug
         run: |
           sudo ./build/durdur attach -i ens3
+          timeout 20s cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
           sudo ./build/durdur drop --src "169.155.49.112"
           ping -c 1 -I ens3 169.155.49.112
           sudo ./build/durdur detach
+          sleep 20s
+          cat trace_output.txt
 
       - name: Test
         run: make test
