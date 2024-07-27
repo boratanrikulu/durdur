@@ -11,7 +11,7 @@
 #include <stdarg.h>
 
 #define MAX_DNS_NAME_LENGTH 128
-#define MAX_ENTRIES 1024
+#define MAX_ENTRIES 1024000
 
 // To see debug logs, set "#define DEBUG 1"
 // and watch "/sys/kernel/debug/tracing/trace_pipe" file.
