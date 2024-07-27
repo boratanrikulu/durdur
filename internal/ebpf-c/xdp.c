@@ -131,12 +131,14 @@ int xdp_durdur_func(struct xdp_md *ctx)
 	struct iphdr *ip = data + sizeof(struct ethhdr);
 
 	__u32 ip_src = ip->saddr;
+	printk("IP %s", &ip_src);
 	long *pkt_count = bpf_map_lookup_elem(&drop_src_addrs, &ip_src);
 	if (pkt_count)
 	{
 		__sync_fetch_and_add(pkt_count, 1);
 		return XDP_DROP;
 	}
+
 
 	if (ip->protocol == IPPROTO_UDP)
 	{
