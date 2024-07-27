@@ -15,6 +15,7 @@
 
 // To see debug logs, set "#define DEBUG 1"
 // and watch "/sys/kernel/debug/tracing/trace_pipe" file.
+#define DEBUG 1
 #ifdef DEBUG
 #define printk(fmt, ...)                                   \
 	({                                                     \
