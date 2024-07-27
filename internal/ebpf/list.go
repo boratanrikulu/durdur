@@ -16,7 +16,7 @@ func (e *EBPF) ListSrc() (map[string]int, error) {
 	entries := e.Objects.DropSrcAddrs.Iterate()
 	for {
 		var key uint32
-		var value uint8
+		var value int64
 		if next := entries.Next(&key, &value); !next {
 			break
 		}
@@ -36,7 +36,7 @@ func (e *EBPF) ListDNS() (map[string]int, error) {
 	entries := e.Objects.DropDns.Iterate()
 	for {
 		var key [bytesLength]byte
-		var value uint8
+		var value int64
 		if next := entries.Next(&key, &value); !next {
 			break
 		}
