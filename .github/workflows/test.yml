@@ -47,6 +47,7 @@ jobs:
           sudo ./build/durdur drop --src "169.155.49.112"
           ping -c 1 -I ens3 169.155.49.112
           sudo bpftool map list
+          sudo ip a
           sudo ip link show
           sudo ip link show dev ens3
           sudo bpftool prog show
