@@ -42,12 +42,14 @@ jobs:
       - name: Debug
         run: |
           sudo ./build/durdur attach -i ens3
-          sudo bpftool prog list
           timeout 20s sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
           timeout 20s sudo tcpdump -i ens3 > tcp_output.txt &
           sudo ./build/durdur drop --src "169.155.49.112"
           ping -c 1 -I ens3 169.155.49.112
           sudo bpftool map list
+          sudo ip link show dev ens3
+          sudo bpftool prog show
+          sudo bpftool net show
           sudo ./build/durdur detach
           sleep 20s
           cat trace_output.txt
