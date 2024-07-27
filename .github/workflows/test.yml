@@ -43,7 +43,7 @@ jobs:
         run: |
           sudo ./build/durdur attach -i lo
           timeout 20s sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
-          timeout 20s sudo tcpdump -i lo > tcp_output.txt &
+          timeout 20s sudo tcpdump -i lo -nn > tcp_output.txt &
           sudo ./build/durdur drop --src "127.0.0.8"
           ping -c 1 -I lo 127.0.0.8 || true
           sudo bpftool map list
@@ -52,6 +52,7 @@ jobs:
           sudo ip link show dev lo
           sudo bpftool prog show
           sudo bpftool net show
+          sudo dmesg | tail -n 50
           sudo ./build/durdur detach
           sleep 20s
           cat trace_output.txt
