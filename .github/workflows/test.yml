@@ -41,7 +41,7 @@ jobs:
 
       - name: Debug
         run: |
-          sudo ./build/durdur attach -i enp0s3
+          sudo ./build/durdur attach -i ens3
           timeout 20s sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
           timeout 20s sudo tcpdump -i ens3 > tcp_output.txt &
           sudo ./build/durdur drop --src "169.155.49.112"
