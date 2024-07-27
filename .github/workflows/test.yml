@@ -36,8 +36,8 @@ jobs:
           ip a
           ifconfig
 
-      - name: Generate
-        run: make generate
+      - name: Build
+        run: make build
 
       - name: Debug
         run: |
