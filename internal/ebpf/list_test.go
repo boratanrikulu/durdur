@@ -34,14 +34,14 @@ func TestList(t *testing.T) {
 	c.Run("list ip and dns", func(c *qt.C) {
 		newTWrap().Run(c, "attach", func(e *EBPF) {
 			c.Assert(e.DropSrc(tSrcIP), qt.IsNil)
-			c.Assert(e.DropDNS("bora.sh", "quik.bora.sh"), qt.IsNil)
+			c.Assert(e.DropDNS("bora.sh", "lirik.bora.sh"), qt.IsNil)
 
 			srcList, err := e.ListDNS()
 			c.Assert(err, qt.IsNil)
 			c.Assert(srcList, qt.HasLen, 2)
 			c.Assert(srcList, qt.DeepEquals, map[string]int{
-				"bora.sh":      0,
-				"quik.bora.sh": 0,
+				"bora.sh":       0,
+				"lirik.bora.sh": 0,
 			})
 
 			TDNSLookup(c, "bora.sh", false)
@@ -50,7 +50,7 @@ func TestList(t *testing.T) {
 			c.Assert(err, qt.IsNil)
 			c.Assert(srcList, qt.HasLen, 2)
 			c.Assert(srcList["bora.sh"], qt.Not(qt.Equals), 0)
-			c.Assert(srcList["quik.bora.sh"], qt.Equals, 0)
+			c.Assert(srcList["lirik.bora.sh"], qt.Equals, 0)
 
 			srcList, err = e.ListSrc()
 			c.Assert(err, qt.IsNil)
