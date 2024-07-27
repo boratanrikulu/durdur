@@ -7,9 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: test
-    runs-on: ubuntu-latest
+  build-arm:
+    name: Test on ARM
+    runs-on: ubicloud-standard-2-arm
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -19,16 +19,25 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Install depends
-        run: sudo apt install -y --no-install-recommends clang llvm libbpf0 libbpf-dev musl musl-dev gcc-multilib
+      - name: Install dependencies
+        run: sudo apt install -y --no-install-recommends gcc clang llvm libbpf0 libbpf-dev musl musl-dev build-essential linux-libc-dev
+
+      - name: Create links
+        run: |
+          sudo ln -s /usr/include/aarch64-linux-gnu/asm /usr/include/asm
+          sudo ln -s /usr/include/aarch64-linux-gnu/bits /usr/include/bits
+          sudo ln -s /usr/include/aarch64-linux-gnu/sys /usr/include/sys
+          sudo ln -s /usr/include/aarch64-linux-gnu/gnu /usr/include/gnu
+
+      - name: Check system
+        run: |
+          uname -a
+          lscpu
+          ip a
+          ifconfig
 
       - name: Generate
         run: make generate
 
       - name: Test
         run: make test
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
