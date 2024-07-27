@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: sudo apt install -y --no-install-recommends gcc clang llvm libbpf0 libbpf-dev musl musl-dev build-essential linux-libc-dev bpftool
+        run: sudo apt install -y --no-install-recommends gcc clang llvm libbpf0 libbpf-dev musl musl-dev build-essential linux-libc-dev linux-tools-common
 
       - name: Create links
         run: |
