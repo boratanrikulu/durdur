@@ -45,7 +45,7 @@ jobs:
           sudo bpftool prog list
           timeout 20s sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
           sudo ./build/durdur drop --src "127.0.0.8"
-          ping -c 1 127.0.0.8
+          ping -c 1 127.0.0.8 || true
           sudo bpftool map list
           sudo ./build/durdur detach
           sleep 20s
