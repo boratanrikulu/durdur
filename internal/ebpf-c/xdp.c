@@ -117,10 +117,14 @@ int xdp_durdur_func(struct xdp_md *ctx)
 	void *data = (void *)(long)ctx->data;
 	void *data_end = (void *)(long)ctx->data_end;
 
+	printk("1");
+
 	if (data + sizeof(struct ethhdr) + sizeof(struct iphdr) > data_end)
 	{
 		return XDP_PASS;
 	}
+
+	printk("2");
 
 	struct ethhdr *eth = data;
 	if (eth->h_proto != bpf_htons(ETH_P_IP))
