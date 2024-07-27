@@ -50,6 +50,7 @@ jobs:
           sudo ./build/durdur detach
           sleep 20s
           cat trace_output.txt
+          echo "ok"
 
       - name: Test
         run: make test
