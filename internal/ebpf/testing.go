@@ -1,6 +1,7 @@
 package ebpf
 
 import (
+	"context"
 	"net"
 	"testing"
 	"time"
@@ -104,9 +105,16 @@ func TTCPWrite(c *qt.C, address string, ok bool) {
 	c.Assert(err, qt.IsNil)
 }
 
-// TDNSLookup tests if the DNS lookup works well.
+// TDNSLookup tests if the DNS lookup works well without using DNS cache.
 func TDNSLookup(c *qt.C, dns string, ok bool) {
-	_, err := net.LookupIP(dns)
+	r := &net.Resolver{
+		PreferGo: true,
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			return net.Dial(network, "8.8.8.8:53")
+		},
+	}
+
+	_, err := r.LookupIP(context.Background(), "ip", dns)
 	if !ok {
 		c.Assert(err, qt.IsNotNil)
 		return
