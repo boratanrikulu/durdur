@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: sudo apt install -y --no-install-recommends gcc clang llvm libbpf0 libbpf-dev musl musl-dev build-essential linux-libc-dev
+        run: sudo apt install -y --no-install-recommends gcc clang llvm libbpf0 libbpf-dev musl musl-dev build-essential linux-libc-dev bpftool
 
       - name: Create links
         run: |
@@ -45,9 +45,10 @@ jobs:
           timeout 20s sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
           sudo ./build/durdur drop --src "169.155.49.112"
           ping -c 1 -I ens3 169.155.49.112
+          sudo bpftool map list
           sudo ./build/durdur detach
           sleep 20s
-          sudo cat trace_output.txt
+          cat trace_output.txt
 
       - name: Test
         run: make test
