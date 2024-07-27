@@ -115,4 +115,4 @@ PS: You don't need to use `--net="host"` if you don't want to access host's inte
 ## Copyright
 
 [GPL-3.0 license](https://github.com/boratanrikulu/durdur/blob/main/LICENSE),  
-Copyright 2022-2023 Bora Tanrikulu <[me@bora.sh](mailto:me@bora.sh)>
+Copyright 2022-2024 Bora Tanrikulu <[me@bora.sh](mailto:me@bora.sh)>
