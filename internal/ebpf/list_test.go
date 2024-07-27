@@ -31,7 +31,7 @@ func TestList(t *testing.T) {
 		})
 	})
 
-	c.Run("list dns after drop", func(c *qt.C) {
+	c.Run("list dns after drop and write", func(c *qt.C) {
 		newTWrap().Run(c, "attach", func(e *EBPF) {
 			c.Assert(e.DropDNS("bora.sh", "lirik.bora.sh"), qt.IsNil)
 
@@ -53,7 +53,7 @@ func TestList(t *testing.T) {
 		})
 	})
 
-	c.Run("list ip after drop", func(c *qt.C) {
+	c.Run("list ip after drop and write", func(c *qt.C) {
 		newTWrap().Run(c, "attach", func(e *EBPF) {
 			c.Assert(e.DropSrc(tSrcIP), qt.IsNil)
 			srcList, err := e.ListSrc()
