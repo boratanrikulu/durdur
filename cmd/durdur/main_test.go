@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	tIface = "eth0"
+	tIface = "ens3"
 
 	tDNS = "quik.bora.sh"
 	tIP  = "169.155.49.112"

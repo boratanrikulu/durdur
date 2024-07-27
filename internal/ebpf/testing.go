@@ -11,7 +11,7 @@ import (
 
 var (
 	tIface    *net.Interface // It is set by tNew().
-	tIfaceStr = "eth0"
+	tIfaceStr = "ens3"
 
 	tSrcIP    net.IP // It is set by tNew().
 	tSrcIpStr = "169.155.49.112"
