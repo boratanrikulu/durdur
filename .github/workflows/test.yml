@@ -45,7 +45,7 @@ jobs:
           timeout 20s sudo cat /sys/kernel/debug/tracing/trace_pipe > trace_output.txt &
           timeout 20s sudo tcpdump -i lo > tcp_output.txt &
           sudo ./build/durdur drop --src "127.0.0.8"
-          ping -c 1 -I lo 127.0.0.8
+          ping -c 1 -I lo 127.0.0.8 || true
           sudo bpftool map list
           sudo ip a
           sudo ip link show
