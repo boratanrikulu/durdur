@@ -14,7 +14,7 @@ var (
 
 	tSrcIP    net.IP // It is set by tNew().
 	tSrcIpStr = "169.155.49.112"
-	tDNS      = "quik.do"
+	tDNS      = "quik.bora.sh"
 )
 
 // tNew initializes testing variables and returns *qt.C.
